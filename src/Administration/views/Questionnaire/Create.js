@@ -185,7 +185,6 @@ const Create = () => {
             >
               {state._id ? "Actualizar Formulario" : "Guardar Formulario"}
             </button>
-            <button onClick={a}>boton</button>
           </div>
         </div>
       </div>
