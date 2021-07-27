@@ -1,5 +1,5 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "https://consultateapi.herokuapp.com/Questionnaire",
+  baseURL: "https://consultateapi.herokuapp.com",
 });
