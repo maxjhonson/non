@@ -10,13 +10,16 @@ function App() {
     <Router>
       <Switch>
         <Route exact path="/">
-          <CountrySelection />
+          {/* <CountrySelection /> */}
+          <p>--</p>
         </Route>
         <Route path="/q_usa">
-          <QuestionsList />
+          {/* <QuestionsList /> */}
+          <p>--</p>
         </Route>
         <Route path="/q_eu">
-          <QuestionsList />
+          {/* <QuestionsList /> */}
+          <p>--</p>
         </Route>
         <Route path="/Questionnaire/" exact>
           <Questionnaire />
