@@ -1,68 +1,98 @@
-import React, { useEffect, useState } from "react";
+import React, { isValidElement, useEffect, useState } from "react";
 import Answer from "../../components/Questionnaire/Answer";
 import { v4 as uuidv4 } from "uuid";
 import { ALFABET } from "../../../common/config";
 
-const AddQuestion = ({ state, setState }) => {
-  const [question, setQuestion] = useState("");
-  const [answers, setAnswers] = useState([]);
+const AddQuestion = ({ state, setState, selectedQuestion }) => {
+  const [question, setQuestion] = useState({ text: "", answers: [] });
   const [valid, setValid] = useState(true);
 
+  useEffect(() => {
+    setQuestion(selectedQuestion);
+  }, [selectedQuestion]);
+
   const renderAnswers = () => {
-    if (!answers) return null;
-    return answers.map((answer) => {
+    if (!question.answers) return null;
+    return question.answers.map((answer) => {
       return (
         <Answer
           key={answer._id || answer.tempId}
           answer={answer}
-          answers={answers}
-          setAnswers={setAnswers}
+          question={question}
+          setQuestion={setQuestion}
         />
       );
     });
   };
 
   const addAnswer = () => {
+    const answer = {
+      letter: ALFABET[question.answers.length],
+      tempId: uuidv4(),
+      pendingSave: true,
+      text: "",
+    };
+    const answers = [...question.answers, answer];
+    setQuestion({ ...question, answers });
     setValid(true);
-    setAnswers([
-      ...answers,
-      {
-        letter: ALFABET[answers.length],
-        tempId: uuidv4(),
-        pendingSave: true,
-        text: "",
-      },
-    ]);
+  };
+
+  const addOrQuestion = () => {
+    if (!isValid()) return setValid(false);
+
+    if (question._id || question.tempId) {
+      updateQuestion();
+    } else {
+      addQuestion();
+    }
+
+    setQuestion({ text: "", answers: [] });
+    setValid(true);
   };
 
   const addQuestion = () => {
-    if (!question || answers.length <= 0 || answers.some((x) => x.text === ""))
-      return setValid(false);
     setState({
       ...state,
       questions: [
         ...state.questions,
         {
-          text: question,
-          answers: answers,
+          text: question.text,
+          answers: question.answers,
           tempId: uuidv4(),
           pendingSave: true,
           index: state.questions.length + 1,
         },
       ],
     });
-    setQuestion("");
-    setAnswers([]);
-    setValid(true);
+  };
+  const updateQuestion = () => {
+    const questionsUpdated = state.questions.map((q) =>
+      q._id === question._id || (q.tempId && q.tempId === question.tempId)
+        ? question
+        : q
+    );
+    setState({
+      ...state,
+      questions: questionsUpdated,
+    });
+  };
+
+  const isValid = () => {
+    return (
+      question.text &&
+      question.answers.length > 0 &&
+      !question.answers.some((x) => x.text === "")
+    );
   };
 
   return (
     <div
       className="modal fade"
-      id="exampleModal"
+      id="addQuestionModal"
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
+      data-toggle="modal"
     >
       <div className="modal-dialog modal-lg">
         <div className="modal-content">
@@ -83,8 +113,10 @@ const AddQuestion = ({ state, setState }) => {
             </label>
             <input
               type="text"
-              value={question}
-              onChange={(e) => setQuestion(e.target.value)}
+              value={question.text}
+              onChange={(e) =>
+                setQuestion({ ...question, text: e.target.value })
+              }
               className="form-control"
             ></input>
             <div className="mb-2"></div>
@@ -109,7 +141,7 @@ const AddQuestion = ({ state, setState }) => {
             <button
               type="button"
               className="btn btn-primary"
-              onClick={addQuestion}
+              onClick={addOrQuestion}
             >
               Agregar
             </button>

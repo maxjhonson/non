@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { ALFABET } from "../../../common/config";
 import Answer from "./Answer";
 
-const Question = ({ question, deleteQuestion }) => {
+const Question = ({ question, deleteQuestion, editQuestion }) => {
   const renderAnswers = () => {
     return question.answers?.map((answ) => {
       return (
@@ -31,6 +31,14 @@ const Question = ({ question, deleteQuestion }) => {
           onClick={() => deleteQuestion(question)}
         >
           X
+        </button>
+      </td>
+      <td>
+        <button
+          className="btn btn-primary"
+          onClick={(e) => editQuestion(e, question)}
+        >
+          Editar
         </button>
       </td>
     </tr>

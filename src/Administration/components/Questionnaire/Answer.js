@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { ALFABET } from "../../../common/config";
 
-const Answer = ({ answer, answers, setAnswers }) => {
+const Answer = ({ answer, question, setQuestion }) => {
   // const [answerState, setAnswerState] = useState({...answer});
   const [text, setText] = useState(answer.text);
 
   const deleteAnswer = (e, id, isSaved) => {
     e.preventDefault();
-    const answersFiltered = answers
+    const answersFiltered = question.answers
       .filter((answer) => answer._id !== id && answer.tempId !== id)
       .map((ans, i) => {
         return { ...ans, letter: ALFABET[i] };
       });
-    setAnswers(answersFiltered);
+    setQuestion({ ...question, answers: answersFiltered });
   };
 
   const updateText = (e) => {
@@ -21,12 +21,12 @@ const Answer = ({ answer, answers, setAnswers }) => {
 
   useEffect(() => {
     const timeOut = setTimeout(() => {
-      const answersUpdated = answers.map((ans) => {
+      const answersUpdated = question.answers.map((ans) => {
         return ans._id === answer._id && ans.tempId === answer.tempId
           ? { ...ans, text: text }
           : ans;
       });
-      setAnswers(answersUpdated);
+      setQuestion({ ...question, answers: answersUpdated });
     }, 500);
     return () => clearTimeout(timeOut);
   }, [text]);

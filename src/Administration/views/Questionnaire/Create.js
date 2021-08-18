@@ -11,6 +11,10 @@ const Create = () => {
   const [state, setState] = useState(null);
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
+  const [selectedQuestion, setSelectedQuestion] = useState({
+    question: "",
+    answers: [],
+  });
 
   //if id is not null, load the questionaire form
 
@@ -95,6 +99,18 @@ const Create = () => {
     setState({ ...state, questions: questionFiltered });
   };
 
+  const editQuestion = (e, question) => {
+    e.preventDefault();
+    setSelectedQuestion(question);
+    window.$("#addQuestionModal").modal("show");
+  };
+
+  const addQuestion = (e, question) => {
+    e.preventDefault();
+    setSelectedQuestion({ text: "", answers: [] });
+    window.$("#addQuestionModal").modal("show");
+  };
+
   const renderQuestion = () => {
     return state?.questions.map((question) => {
       return (
@@ -104,6 +120,7 @@ const Create = () => {
           state={state}
           setState={setState}
           deleteQuestion={deleteQuestion}
+          editQuestion={editQuestion}
         />
       );
     });
@@ -111,13 +128,13 @@ const Create = () => {
 
   if (state === null) return <p>Cargando...</p>;
 
-  const a = (e) => {
-    e.preventDefault();
-  };
-
   return (
     <form id="form" className="needs-validation">
-      <AddQuestion state={state} setState={setState} />
+      <AddQuestion
+        state={state}
+        setState={setState}
+        selectedQuestion={selectedQuestion}
+      />
       <Loading loading={loading} />
 
       <div className="container">
@@ -170,8 +187,7 @@ const Create = () => {
             <button
               type="button"
               className="btn btn-primary"
-              data-bs-toggle="modal"
-              data-bs-target="#exampleModal"
+              onClick={addQuestion}
             >
               Agregar pregunta
             </button>
