@@ -2,10 +2,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import * as $ from "jquery/dist/jquery.js";
 import "bootstrap/dist/js/bootstrap.js";
 
-import QuestionsList from "./views/QuestionsList";
-import CountrySelection from "./views/CountrySelection";
-import Questionnaire from "./Administration/views/Questionnaire/Questionnaire";
-import QuestionnaireCreate from "./Administration/views/Questionnaire/Create";
+import Questionnaire from "./views/Administration/Questionnaire/Questionnaire";
+import QuestionnaireCreate from "./views/Administration/Questionnaire/Create";
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 

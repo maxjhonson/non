@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useReducer } from "react";
 import { useParams } from "react-router-dom";
-import Question from "../../components/Questionnaire/Question";
-import { v4 as uuidv4 } from "uuid";
+import Question from "../../../components/Administration/Questionnaire/Question";
 import coreApi from "../../../api/coreApi";
-import AddQuestion from "../../components/Questionnaire/AddQuestion";
+import AddQuestion from "../../../components/Administration/Questionnaire/AddQuestion";
 import swal from "sweetalert";
-import Loading from "../../components/Questionnaire/Loading";
+import Loading from "../../../components/Administration/Questionnaire/Loading";
+import createReducer from "../../../reducers/administration/questionnaire/createReducer";
+import AddDependent from "../../../components/Administration/Questionnaire/AddDependent";
 
 const Create = () => {
   const [state, setState] = useState(null);
@@ -16,6 +17,8 @@ const Create = () => {
     answers: [],
   });
 
+  const context = React.createContext();
+
   //if id is not null, load the questionaire form
 
   useEffect(async () => {
@@ -23,10 +26,10 @@ const Create = () => {
     if (!id) return setState({ formName: "", questions: [] });
 
     //if id id not empty search the data
+
     try {
       const result = await coreApi.get(`/questionnaire/${id}`);
       setState(result.data);
-      console.log(state);
     } catch (e) {}
   }, []);
 
@@ -99,6 +102,18 @@ const Create = () => {
     setState({ ...state, questions: questionFiltered });
   };
 
+  const addDependent = (e, question) => {
+    e.preventDefault();
+    if (state.questions.some((q) => q._id === undefined))
+      return swal(
+        "Alerta",
+        "Antes de agregar una dependiente favor guargar/actualizar el formulario",
+        "warning"
+      );
+    setSelectedQuestion(question);
+    window.$("#addDependentModal").modal("show");
+  };
+
   const editQuestion = (e, question) => {
     e.preventDefault();
     setSelectedQuestion(question);
@@ -121,6 +136,7 @@ const Create = () => {
           setState={setState}
           deleteQuestion={deleteQuestion}
           editQuestion={editQuestion}
+          addDependent={addDependent}
         />
       );
     });
@@ -131,6 +147,11 @@ const Create = () => {
   return (
     <form id="form" className="needs-validation">
       <AddQuestion
+        state={state}
+        setState={setState}
+        selectedQuestion={selectedQuestion}
+      />
+      <AddDependent
         state={state}
         setState={setState}
         selectedQuestion={selectedQuestion}
@@ -178,6 +199,8 @@ const Create = () => {
                 <th>#</th>
                 <th>Preguntas</th>
                 <th>Respuestas</th>
+                <th></th>
+                <th></th>
                 <th></th>
               </tr>
             </thead>

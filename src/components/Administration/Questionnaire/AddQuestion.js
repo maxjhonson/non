@@ -1,7 +1,7 @@
 import React, { isValidElement, useEffect, useState } from "react";
-import Answer from "../../components/Questionnaire/Answer";
+import Answer from "./Answer";
 import { v4 as uuidv4 } from "uuid";
-import { ALFABET } from "../../../common/config";
+import { ALFABET } from "../../../common/constants";
 
 const AddQuestion = ({ state, setState, selectedQuestion }) => {
   const [question, setQuestion] = useState({ text: "", answers: [] });
@@ -90,7 +90,6 @@ const AddQuestion = ({ state, setState, selectedQuestion }) => {
       className="modal fade"
       id="addQuestionModal"
       tabIndex="-1"
-      aria-labelledby="exampleModalLabel"
       aria-hidden="true"
       data-toggle="modal"
     >

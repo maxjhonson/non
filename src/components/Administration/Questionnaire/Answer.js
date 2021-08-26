@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ALFABET } from "../../../common/config";
+import { ALFABET } from "../../../common/constants";
 
 const Answer = ({ answer, question, setQuestion }) => {
   // const [answerState, setAnswerState] = useState({...answer});

@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { ALFABET } from "../../../common/config";
-import Answer from "./Answer";
+import React from "react";
 
-const Question = ({ question, deleteQuestion, editQuestion }) => {
+const Question = ({
+  state,
+  question,
+  deleteQuestion,
+  editQuestion,
+  addDependent,
+}) => {
   const renderAnswers = () => {
     return question.answers?.map((answ) => {
       return (
@@ -27,18 +30,30 @@ const Question = ({ question, deleteQuestion, editQuestion }) => {
       <td>{renderAnswers()}</td>
       <td>
         <button
-          className="btn btn-danger"
-          onClick={() => deleteQuestion(question)}
+          className="btn btn-primary"
+          onClick={(e) => addDependent(e, question)}
         >
-          X
+          Asignar como dependiente{" "}
+          {question.denpentQuestion && question.dependentAnswer && (
+            <span class="badge bg-secondary">+</span>
+          )}
         </button>
       </td>
+
       <td>
         <button
           className="btn btn-primary"
           onClick={(e) => editQuestion(e, question)}
         >
           Editar
+        </button>
+      </td>
+      <td>
+        <button
+          className="btn btn-danger"
+          onClick={() => deleteQuestion(question)}
+        >
+          X
         </button>
       </td>
     </tr>
