@@ -34,9 +34,9 @@ const Question = ({
           onClick={(e) => addDependent(e, question)}
         >
           Asignar como dependiente{" "}
-          {question.denpentQuestion && question.dependentAnswer && (
-            <span class="badge bg-secondary">+</span>
-          )}
+          <span class="badge bg-secondary">
+            ({question.dependentQuestions?.length})
+          </span>
         </button>
       </td>
 

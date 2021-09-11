@@ -1,21 +1,17 @@
-import React, { isValidElement, useEffect, useState } from "react";
-import Answer from "./Answer";
-import { v4 as uuidv4 } from "uuid";
-import { ALFABET } from "../../../common/constants";
+import React, { isValidElement, useEffect, useRef, useState } from "react";
+import Dependents from "./Dependents";
 
 const AddDependent = ({ state, setState, selectedQuestion }) => {
-  const [question, setQuestion] = useState({});
+  const [question, setQuestion] = useState({ questionId: "" });
+  const [dependentQuestions, setDependentQuestions] = useState([]);
   const [answer, setAnswer] = useState({});
 
   const questionOptions = () => {
-    return state.questions
-      .filter((quest) => quest.index != selectedQuestion.index)
+    return state?.questions
+      ?.filter((quest) => quest.index != selectedQuestion.index)
       .map((quest) => {
         return (
-          <option
-            selected={selectedQuestion.denpentQuestion === quest._id}
-            value={quest._id}
-          >
+          <option key={quest._id} value={quest._id}>
             {quest.text}
           </option>
         );
@@ -23,14 +19,19 @@ const AddDependent = ({ state, setState, selectedQuestion }) => {
   };
 
   useEffect(() => {
-    onQuestionChange(selectedQuestion.denpentQuestion);
+    setDependentQuestions(selectedQuestion.dependentQuestions ?? []);
+    //onQuestionChange(selectedQuestion.denpentQuestion);
+
+    setQuestion({ questionId: "" });
+    setAnswer(null);
   }, [selectedQuestion]);
 
   const answerOptions = () => {
     return question?.answers?.map((answ) => {
       return (
         <option
-          selected={selectedQuestion.dependentAnswer === answ._id}
+          key={answ._id}
+          //selected={selectedQuestion.dependentAnswer === answ._id}
           value={answ._id}
         >
           {answ.text}
@@ -42,27 +43,62 @@ const AddDependent = ({ state, setState, selectedQuestion }) => {
   const onQuestionChange = (id) => {
     const question = state.questions.find((q) => q._id === id);
     setQuestion(question);
+    setAnswer(null);
   };
 
   const onAnswerChange = (id) => {
-    console.log(id);
     const answer = question?.answers?.find((a) => a._id === id);
     setAnswer(answer);
   };
 
-  const asing = () => {
-    const questions = state.questions.map((q) => {
-      if (q._id !== selectedQuestion._id) return q;
+  const deleteDependent = (dependent) => {
+    const dependentsFiltered = dependentQuestions.filter((d) => {
+      return (
+        d.questionId !== dependent.questionId &&
+        d.answerId !== dependent.answerId
+      );
+    });
+    setDependentQuestions(dependentsFiltered);
+  };
 
+  const asing = () => {
+    //{questionId, qustionText,answerId, answerId}
+    const newRow = {
+      questionId: question?._id,
+      questionText: question?.text,
+      answerId: answer?._id,
+      answerText: answer?.text,
+    };
+
+    const isDuplicate = dependentQuestions.some((dependent) => {
+      return (
+        dependent.questionId === newRow.questionId &&
+        dependent.answerId === newRow.answerId
+      );
+    });
+
+    if (
+      isDuplicate ||
+      newRow.questionId === undefined ||
+      newRow.answerId === undefined
+    )
+      return;
+
+    setDependentQuestions([...dependentQuestions, newRow]);
+
+    //window.$("#addDependentModal").modal("toggle");
+  };
+
+  useEffect(() => {
+    const questions = state?.questions?.map((q) => {
+      if (q._id !== selectedQuestion._id) return q;
       return {
         ...q,
-        denpentQuestion: question?._id,
-        dependentAnswer: answer?._id,
+        dependentQuestions: dependentQuestions,
       };
     });
     setState({ ...state, questions });
-    window.$("#addDependentModal").modal("toggle");
-  };
+  }, [dependentQuestions]);
 
   return (
     <div
@@ -90,8 +126,11 @@ const AddDependent = ({ state, setState, selectedQuestion }) => {
             <select
               className="form-select"
               onChange={(e) => onQuestionChange(e.target.value)}
+              value={question?.questionId}
             >
-              <option value="">--</option>
+              <option value="" defaultValue>
+                --
+              </option>
               {questionOptions()}
             </select>
             <label class="form-label">Respuesta</label>
@@ -102,6 +141,11 @@ const AddDependent = ({ state, setState, selectedQuestion }) => {
               <option value="">--</option>
               {answerOptions()}
             </select>
+
+            <Dependents
+              dependentQuestions={dependentQuestions}
+              deleteDependent={deleteDependent}
+            />
           </div>
 
           <div className="modal-footer">
@@ -113,7 +157,7 @@ const AddDependent = ({ state, setState, selectedQuestion }) => {
               Cerrar
             </button>
             <button type="button" className="btn btn-primary" onClick={asing}>
-              Asignar
+              Agregar
             </button>
           </div>
         </div>

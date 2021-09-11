@@ -127,7 +127,7 @@ const Create = () => {
   };
 
   const renderQuestion = () => {
-    return state?.questions.map((question) => {
+    return state?.questions?.map((question) => {
       return (
         <Question
           key={question._id || question.tempId}
