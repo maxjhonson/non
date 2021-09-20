@@ -6,6 +6,7 @@ import Questionnaire from "./views/Administration/Questionnaire/Questionnaire";
 import QuestionnaireCreate from "./views/Administration/Questionnaire/Create";
 
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import AnswersValue from "./components/Administration/AnswersValue";
 
 window.jQuery = $;
 window.$ = $;
@@ -38,8 +39,10 @@ function App() {
               </span>
             </div>
           </nav>
-
           <QuestionnaireCreate />
+        </Route>
+        <Route path="/Questionnaire/value/:id">
+          <AnswersValue />
         </Route>
       </Switch>
     </Router>

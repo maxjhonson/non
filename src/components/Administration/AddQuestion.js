@@ -1,7 +1,7 @@
 import React, { isValidElement, useEffect, useState } from "react";
 import Answer from "./Answer";
 import { v4 as uuidv4 } from "uuid";
-import { ALFABET } from "../../../common/constants";
+import { ALFABET } from "../../common/constants";
 
 const AddQuestion = ({ state, setState, selectedQuestion }) => {
   const [question, setQuestion] = useState({ text: "", answers: [] });

@@ -1,12 +1,11 @@
 import React, { useEffect, useState, useReducer } from "react";
 import { useParams } from "react-router-dom";
-import Question from "../../../components/Administration/Questionnaire/Question";
+import Question from "../../../components/Administration/Question";
 import coreApi from "../../../api/coreApi";
-import AddQuestion from "../../../components/Administration/Questionnaire/AddQuestion";
+import AddQuestion from "../../../components/Administration/AddQuestion";
 import swal from "sweetalert";
-import Loading from "../../../components/Administration/Questionnaire/Loading";
-import createReducer from "../../../reducers/administration/questionnaire/createReducer";
-import AddDependent from "../../../components/Administration/Questionnaire/AddDependent";
+import Loading from "../../../components/Administration/Loading";
+import AddDependent from "../../../components/Administration/AddDependent";
 
 const Create = () => {
   const [state, setState] = useState(null);

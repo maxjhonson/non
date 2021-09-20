@@ -27,9 +27,9 @@ const Questionnaire = () => {
             </Link>
           </td>
           <td>
-            <a href="#">
+            <Link to={`/Questionnaire/value/${questionnaire._id}`}>
               <i className="fas fa-vials"></i>
-            </a>
+            </Link>
           </td>
         </tr>
       );
