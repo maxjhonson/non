@@ -11,11 +11,7 @@ import { ObjectID } from "bson";
 const AddRuleModal = ({ questionnaire, addRule, onDismiss, selectedRule }) => {
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   useEffect(() => {
-    const selected = selectedRule?.questionsRule.flatMap(
-      (ques) => ques.answers
-    );
     //   setSelectedAnswers(selected);
-    console.log(selected);
   }, [selectedRule]);
   if (!questionnaire) return <div>Loading</div>;
 
@@ -151,7 +147,10 @@ const AddRuleModal = ({ questionnaire, addRule, onDismiss, selectedRule }) => {
       initialValues={questionnaire}
       render={({ handleSubmit }) => (
         <form onSubmit={handleSubmit} className="ui form">
-          <Field name="ruleName" component="input" />
+          <div className="field">
+            <label>Nombre de la regla</label>
+            <Field name="ruleName" component="input" />
+          </div>
           <FieldArray name="questions">
             {({ fields }) =>
               fields.map((name) => {
