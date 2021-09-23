@@ -7,15 +7,21 @@ import { getIn } from "final-form";
 import { addRule } from "../../actions";
 import { connect } from "react-redux";
 import { ObjectID } from "bson";
+import Modal from "../Modal/Modal";
 
-const AddRuleModal = ({ questionnaire, addRule, onDismiss, selectedRule }) => {
+const AddRuleModal = ({
+  questionnaire,
+  addRule,
+  onDismiss,
+  selectedRule,
+  show,
+}) => {
   const [selectedAnswers, setSelectedAnswers] = useState([]);
   useEffect(() => {
     const selected = selectedRule?.questionsRule.flatMap(
       (ques) => ques.answers
     );
     //   setSelectedAnswers(selected);
-    console.log(selected);
   }, [selectedRule]);
   if (!questionnaire) return <div>Loading</div>;
 
@@ -48,13 +54,13 @@ const AddRuleModal = ({ questionnaire, addRule, onDismiss, selectedRule }) => {
 
   const renderAnswerList = (name) => {
     return (
-      <React.Fragment>
+      <React.Fragment key={name}>
         <div className="inline fields">
           <div className="field">
             <Field
               name={`${name}.letter`}
               render={(props) => {
-                return <h5 class="ui header">{props.input.value})</h5>;
+                return <h5 className="ui header">{props.input.value})</h5>;
               }}
             />
           </div>
@@ -62,7 +68,7 @@ const AddRuleModal = ({ questionnaire, addRule, onDismiss, selectedRule }) => {
             <Field
               name={`${name}.text`}
               render={(props) => {
-                return <h5 class="ui header">{props.input.value}</h5>;
+                return <h5 className="ui header">{props.input.value}</h5>;
               }}
             />
           </div>
@@ -80,11 +86,11 @@ const AddRuleModal = ({ questionnaire, addRule, onDismiss, selectedRule }) => {
 
   const renderQuestionList = (name) => {
     return (
-      <div className="ui segment">
+      <div className="ui segment" key={name}>
         <Field
           name={`${name}.text`}
           render={(props) => {
-            return <h5 class="ui header">{props.input.value}</h5>;
+            return <h5 className="ui header">{props.input.value}</h5>;
           }}
         />
         <FieldArray name={`${name}.answers`}>
@@ -100,7 +106,7 @@ const AddRuleModal = ({ questionnaire, addRule, onDismiss, selectedRule }) => {
 
   const renderCheckBox = (props, id) => {
     return (
-      <div class="ui checkbox">
+      <div className="ui checkbox">
         <input {...props.input} />
         <label>Agregarla a la regla</label>
       </div>
@@ -113,15 +119,19 @@ const AddRuleModal = ({ questionnaire, addRule, onDismiss, selectedRule }) => {
       props.input.onChange(value + amount);
     };
     return (
-      <div class="inline field">
+      <div className="inline field">
         <label>Valor de la convinación Seleccionada</label>
-        <div class="ui buttons">
-          <button class="ui button" type="button" onClick={() => onchange(-1)}>
+        <div className="ui buttons">
+          <button
+            className="ui button"
+            type="button"
+            onClick={() => onchange(-1)}
+          >
             -
           </button>
-          <div class="or" data-text={props.input.value}></div>
+          <div className="or" data-text={props.input.value}></div>
           <button
-            class="ui positive button"
+            className="ui positive button"
             type="button"
             onClick={() => onchange(1)}
           >
@@ -135,41 +145,52 @@ const AddRuleModal = ({ questionnaire, addRule, onDismiss, selectedRule }) => {
   const decorator = createDecorator({
     field: /questions\[\d+\]\.answers\[\d+\]\.addedToRule/,
     updates: (value, name, allValues) => {
-      const questionsName = name.substring(0, 20);
-      const propertyName = `${name.substring(0, 12)}.hasAnswersRule`;
+      const questionLastBracket = name.indexOf("]") + 1;
+      const questionsName = `${name.substring(0, questionLastBracket)}.answers`;
+      const propertyName = `${name.substring(
+        0,
+        questionLastBracket
+      )}.hasAnswersRule`;
+      console.log(questionsName);
       const answers = getIn(allValues, questionsName);
+
       const hasAnswersRule = answers.some((ans) => ans.addedToRule === true);
       return { [propertyName]: hasAnswersRule };
     },
   });
 
   return (
-    <Form
-      decorators={[decorator]}
-      onSubmit={onSubmit}
-      mutators={{ ...arrayMutators }}
-      initialValues={questionnaire}
-      render={({ handleSubmit }) => (
-        <form onSubmit={handleSubmit} className="ui form">
-          <Field name="ruleName" component="input" />
-          <FieldArray name="questions">
-            {({ fields }) =>
-              fields.map((name) => {
-                return renderQuestionList(name);
-              })
-            }
-          </FieldArray>
-          <Field name="ruleValue" render={renderRuleValue} />
+    <Modal show={show} onDismiss={onDismiss}>
+      <Form
+        decorators={[decorator]}
+        onSubmit={onSubmit}
+        mutators={{ ...arrayMutators }}
+        initialValues={questionnaire}
+        render={({ handleSubmit }) => (
+          <form onSubmit={handleSubmit} className="ui form">
+            <div className="field">
+              <label>Nombre de la regla:</label>
+              <Field name="ruleName" component="input" />
+            </div>
+            <FieldArray name="questions">
+              {({ fields }) =>
+                fields.map((name) => {
+                  return renderQuestionList(name);
+                })
+              }
+            </FieldArray>
+            <Field name="ruleValue" render={renderRuleValue} />
 
-          <button class="ui primary button" type="submit">
-            Agregar Regla
-          </button>
-          <button class="ui  button" type="submit" onClick={onDismiss}>
-            Cancelar
-          </button>
-        </form>
-      )}
-    ></Form>
+            <button className="ui primary button" type="submit">
+              Agregar Regla
+            </button>
+            <button className="ui  button" type="submit" onClick={onDismiss}>
+              Cancelar
+            </button>
+          </form>
+        )}
+      ></Form>
+    </Modal>
   );
 };
 
