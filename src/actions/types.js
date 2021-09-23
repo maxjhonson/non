@@ -1,1 +1,4 @@
 export const FETCH_QUESTIONNAIRE = "FETCH_QUESTIONNAIRE";
+export const FETCH_RULES = "FETCH_RULES";
+export const DELETE_RULE = "DELETE_RULE";
+export const ADD_RULE = "ADD_RULE";

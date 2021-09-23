@@ -50,6 +50,7 @@ const Create = () => {
 
   const save = () => {
     const formData = new FormData();
+    console.log(JSON.stringify(state))
     formData.append("data", JSON.stringify(state));
     formData.append("flag", state.flag);
     setLoading(true);
