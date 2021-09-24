@@ -4,7 +4,6 @@ import { useParams } from "react-router";
 import { Link } from "react-router-dom";
 import { fetchQuestionnaire, fetchRules } from "../../actions";
 
-import Modal from "../Modal";
 import AddRuleModal from "./AddRuleModal";
 import DeleteRuleModal from "./DeleteRuleModal";
 
@@ -32,17 +31,17 @@ function AnswersValue({
     return rules.map((rule) => {
       return (
         <div className="ui segment">
-          <div class="ui large label">
+          <div className="ui large label">
             {rule.ruleName}
-            <div class="detail">Valor: {rule.ruleValue}</div>
+            <div className="detail">Valor: {rule.ruleValue}</div>
           </div>
           {renderQuestionsRule(rule.questionsRule)}
           <div className="ui buttons">
             <button
-              class="ui small negative button"
+              className="ui small negative button"
               onClick={() => deleteRule(rule)}
             >
-              <i class="trash small icon"></i>
+              <i className="trash small icon"></i>
               {/*Delete*/}
             </button>
           </div>
@@ -54,11 +53,11 @@ function AnswersValue({
   const renderQuestionsRule = (questions) => {
     return questions.map((question) => {
       return (
-        <div class="ui list">
-          <div class="item">
-            <i class="question circle icon"></i>
-            <div class="content">
-              <div class="header">{question.text}</div>
+        <div className="ui list">
+          <div className="item">
+            <i className="question circle icon"></i>
+            <div className="content">
+              <div className="header">{question.text}</div>
               {renderAnswersRule(question.answers)}
             </div>
           </div>
@@ -69,7 +68,7 @@ function AnswersValue({
 
   const renderAnswersRule = (answers) => {
     return answers.map((answer) => {
-      return <div class="description">{answer.text}</div>;
+      return <div className="description">{answer.text}</div>;
     });
   };
 
@@ -81,8 +80,8 @@ function AnswersValue({
 
   return (
     <div>
-      <div class="ui menu">
-        <Link to="/Questionnaire/" class="item">
+      <div className="ui menu">
+        <Link to="/Questionnaire/" className="item">
           Volver atras
         </Link>
       </div>
@@ -100,15 +99,12 @@ function AnswersValue({
         </div>
       </div>
 
-      <Modal show={showModal} onDismiss={onDismiss}>
-        <div className="ui segment">
-          <AddRuleModal
-            questionnaire={questionnaire}
-            onDismiss={onDismiss}
-            selectedRule={selectedRule}
-          />
-        </div>
-      </Modal>
+      <AddRuleModal
+        show={showModal}
+        questionnaire={questionnaire}
+        onDismiss={onDismiss}
+        selectedRule={selectedRule}
+      />
 
       <DeleteRuleModal
         show={showDeleteModal}
