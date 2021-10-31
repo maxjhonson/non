@@ -1,12 +1,15 @@
 import "bootstrap/dist/css/bootstrap.css";
 import * as $ from "jquery/dist/jquery.js";
 import "bootstrap/dist/js/bootstrap.js";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 
-import Questionnaire from "./views/Administration/Questionnaire/Questionnaire";
-import QuestionnaireCreate from "./views/Administration/Questionnaire/Create";
-
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import AnswersValue from "./components/Administration/AnswersValue";
+import Admin from "./components/Administration/Admin";
+import Custumer from "./components/Custumer/Custumer";
 
 window.jQuery = $;
 window.$ = $;
@@ -16,34 +19,15 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/">
-          {/* <CountrySelection /> */}
-          <p>--</p>
-        </Route>
-        <Route path="/q_usa">
-          {/* <QuestionsList /> */}
-          <p>--</p>
-        </Route>
-        <Route path="/q_eu">
-          {/* <QuestionsList /> */}
-          <p>--</p>
-        </Route>
-        <Route path="/Questionnaire/" exact>
-          <Questionnaire />
-        </Route>
-        <Route path="/Questionnaire/Create/:id?">
-          <nav class="navbar navbar-light bg-light">
-            <div class="container-fluid">
-              <span class="navbar-brand mb-0 h1">
-                <Link to="/Questionnaire">Volver atras</Link>
-              </span>
-            </div>
-          </nav>
-          <QuestionnaireCreate />
-        </Route>
-        <Route path="/Questionnaire/value/:id">
-          <AnswersValue />
-        </Route>
+        <Route
+          path="/"
+          exact
+          render={() => {
+            return <Redirect to="/c" />;
+          }}
+        ></Route>
+        <Route path="/c" component={Custumer}></Route>
+        <Route path="/admin" component={Admin}></Route>
       </Switch>
     </Router>
   );
