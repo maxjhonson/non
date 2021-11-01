@@ -148,7 +148,6 @@ const AddRuleModal = ({
         0,
         questionLastBracket
       )}.hasAnswersRule`;
-      console.log(questionsName);
       const answers = getIn(allValues, questionsName);
 
       const hasAnswersRule = answers.some((ans) => ans.addedToRule === true);
@@ -157,27 +156,6 @@ const AddRuleModal = ({
   });
 
   return (
-<<<<<<< HEAD
-    <Form
-      decorators={[decorator]}
-      onSubmit={onSubmit}
-      mutators={{ ...arrayMutators }}
-      initialValues={questionnaire}
-      render={({ handleSubmit }) => (
-        <form onSubmit={handleSubmit} className="ui form">
-          <div className="field">
-            <label>Nombre de la regla</label>
-            <Field name="ruleName" component="input" />
-          </div>
-          <FieldArray name="questions">
-            {({ fields }) =>
-              fields.map((name) => {
-                return renderQuestionList(name);
-              })
-            }
-          </FieldArray>
-          <Field name="ruleValue" render={renderRuleValue} />
-=======
     <Modal show={show} onDismiss={onDismiss}>
       <Form
         decorators={[decorator]}
@@ -198,7 +176,6 @@ const AddRuleModal = ({
               }
             </FieldArray>
             <Field name="ruleValue" render={renderRuleValue} />
->>>>>>> fb9349343607567d92b04676a849ff3ebe8104b7
 
             <button className="ui primary button" type="submit">
               Agregar Regla

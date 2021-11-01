@@ -2,11 +2,16 @@ import React, { useEffect } from "react";
 import "@fortawesome/fontawesome-free/js/all.js";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { fetchAllQuestionnaires } from "../../../actions";
+import { fetchAllQuestionnaires, resetQuestionnaire } from "../../../actions";
 
-const QuestionnaireList = ({ questionnaires, fetchAllQuestionnaires }) => {
+const QuestionnaireList = ({
+  questionnaires,
+  fetchAllQuestionnaires,
+  resetQuestionnaire,
+}) => {
   useEffect(async () => {
     fetchAllQuestionnaires();
+    resetQuestionnaire();
   }, []);
 
   const renderQuestionnaires = () => {
@@ -68,9 +73,11 @@ const QuestionnaireList = ({ questionnaires, fetchAllQuestionnaires }) => {
 };
 
 const mapStateToProps = (state) => {
+  console.log(state);
   return { questionnaires: state.questionnaires.all };
 };
 
-export default connect(mapStateToProps, { fetchAllQuestionnaires })(
-  QuestionnaireList
-);
+export default connect(mapStateToProps, {
+  fetchAllQuestionnaires,
+  resetQuestionnaire,
+})(QuestionnaireList);

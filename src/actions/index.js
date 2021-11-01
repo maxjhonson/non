@@ -5,7 +5,9 @@ import {
   FETCH_ALL_QUESTIONNAIRE,
   FETCH_QUESTIONNAIRE,
   FETCH_RULES,
+  RESET_QUESTIONNAIRE,
   UPDATE_LOADING,
+  UPDATE_QUESTIONNAIRE,
 } from "./types";
 
 export const fetchQuestionnaire = (id) => {
@@ -14,6 +16,31 @@ export const fetchQuestionnaire = (id) => {
     const response = await coreApi.get(`/questionnaire/${id}`);
     dispatch({ type: FETCH_QUESTIONNAIRE, payload: response.data });
     dispatch({ type: UPDATE_LOADING, payload: false });
+  };
+};
+
+export const saveOrUpdate = (formValues) => {
+  return async (dispatch) => {
+    dispatch({ type: UPDATE_LOADING, payload: true });
+    if (formValues._id) {
+      const response = await coreApi.put(`/questionnaire/`, {
+        data: JSON.stringify(formValues),
+      });
+      console.log(response.data);
+      dispatch({ type: UPDATE_QUESTIONNAIRE, payload: response.data });
+    } else {
+      const response = await coreApi.put(`/questionnaire`, {
+        data: JSON.stringify(formValues),
+      });
+      dispatch({ type: UPDATE_QUESTIONNAIRE, payload: response.data });
+    }
+    dispatch({ type: UPDATE_LOADING, payload: false });
+  };
+};
+
+export const resetQuestionnaire = () => {
+  return (dispatch) => {
+    dispatch({ type: RESET_QUESTIONNAIRE, payload: undefined });
   };
 };
 
@@ -35,8 +62,10 @@ export const fetchRules = (formId) => {
 
 export const addRule = (rule) => {
   return async (dispatch) => {
+    dispatch({ type: UPDATE_LOADING, payload: true });
     dispatch({ type: ADD_RULE, payload: rule });
     await coreApi.post("/rule", rule);
+    dispatch({ type: UPDATE_LOADING, payload: false });
   };
 };
 

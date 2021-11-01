@@ -7,7 +7,12 @@ import { getIn } from "final-form";
 import { SimpleSpan } from "../../Global/CustomInputs";
 import AddDependentModal from "./AddDependentModal";
 import { connect } from "react-redux";
-import { fetchAllQuestionnaires, fetchQuestionnaire } from "../../../actions";
+import {
+  fetchAllQuestionnaires,
+  fetchQuestionnaire,
+  resetQuestionnaire,
+  saveOrUpdate,
+} from "../../../actions";
 import { useParams } from "react-router";
 
 const renderAnswers = (name) => {
@@ -51,9 +56,13 @@ const NewQuestionnaire = (props) => {
   useEffect(() => {
     if (id) {
       props.fetchQuestionnaire(id);
+    } else {
+      props.resetQuestionnaire();
     }
     props.fetchAllQuestionnaires();
   }, []);
+
+  useEffect(() => {}, [props.questionnaire]);
 
   const renderQuestions = (formValues, name, index, fields) => {
     return (
@@ -101,13 +110,19 @@ const NewQuestionnaire = (props) => {
 
   const onSubmit = (formValues) => {
     console.log(formValues);
+    props.saveOrUpdate(formValues);
   };
+
+  if (props.loading) {
+    return (
+      <div className={`ui  active  inverted dimmer`}>
+        <div className="ui text loader">Cargando</div>
+      </div>
+    );
+  }
 
   return (
     <div className="ui segment">
-      <div className={`ui ${props.loading ? "active" : ""} inverted dimmer`}>
-        <div className="ui text loader">Cargando</div>
-      </div>
       <Form
         initialValues={props.questionnaire}
         onSubmit={onSubmit}
@@ -231,14 +246,13 @@ const formValidator = (values) => {
   if (!values.questions) {
     errors.questions = "Es necesario al menos una pregunta";
   }
-
   return errors;
 };
 
 const mapsStateToProps = (state) => {
   return {
-    questionnaires: state.questionnaires.all,
-    questionnaire: state.questionnaires.current,
+    questionnaires: state.questionnaires?.all,
+    questionnaire: state.questionnaires?.current,
     loading: state.loading,
   };
 };
@@ -246,4 +260,6 @@ const mapsStateToProps = (state) => {
 export default connect(mapsStateToProps, {
   fetchAllQuestionnaires,
   fetchQuestionnaire,
+  saveOrUpdate,
+  resetQuestionnaire,
 })(NewQuestionnaire);

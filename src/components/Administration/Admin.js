@@ -3,6 +3,7 @@ import { Route } from "react-router";
 import { Link } from "react-router-dom";
 import NewQuestionnaire from "./Questionnaire/NewQuestionnaire";
 import QuestionnaireList from "./Questionnaire/QuestionnaireList";
+import AnswersValue from "./AnswersValue";
 
 function Admin() {
   return (
@@ -33,6 +34,9 @@ function Admin() {
       </Route>
       <Route path="/admin/questionnaire/new/:id?">
         <NewQuestionnaire />
+      </Route>
+      <Route path="/admin/questionnaire/value/:id?">
+        <AnswersValue />
       </Route>
     </div>
   );

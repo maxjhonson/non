@@ -12,6 +12,7 @@ function AnswersValue({
   fetchQuestionnaire,
   fetchRules,
   rules,
+  loading,
 }) {
   const { id } = useParams();
   const [showModal, setShowModal] = useState(false);
@@ -51,7 +52,7 @@ function AnswersValue({
   };
 
   const renderQuestionsRule = (questions) => {
-    return questions.map((question) => {
+    return questions?.map((question) => {
       return (
         <div className="ui list">
           <div className="item">
@@ -77,6 +78,14 @@ function AnswersValue({
     setShowModal(false);
     setShowDeleteModal(false);
   };
+
+  if (loading) {
+    return (
+      <div className={`ui  active  inverted dimmer`}>
+        <div className="ui text loader">Cargando</div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -116,7 +125,11 @@ function AnswersValue({
 }
 
 const mapStateToProps = (state) => {
-  return { questionnaire: state.questionnaire, rules: state.rules };
+  return {
+    loading: state.loading,
+    questionnaire: state.questionnaires.current,
+    rules: state.rules,
+  };
 };
 
 export default connect(mapStateToProps, { fetchQuestionnaire, fetchRules })(
