@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import NewQuestionnaire from "./Questionnaire/NewQuestionnaire";
 import QuestionnaireList from "./Questionnaire/QuestionnaireList";
 import AnswersValue from "./AnswersValue";
+import Recomendation from "./recommendation/Recomendation";
 
 function Admin() {
   return (
@@ -17,8 +18,8 @@ function Admin() {
               <Link className="item" to="/admin/questionnaire">
                 Formularios de usuarios
               </Link>
-              <Link className="item" to="/admin/questionnaire">
-                Formularios de Flujo
+              <Link className="item" to="/admin/recommendation">
+                Recomendaciones
               </Link>
             </div>
           </div>
@@ -37,6 +38,9 @@ function Admin() {
       </Route>
       <Route path="/admin/questionnaire/value/:id?">
         <AnswersValue />
+      </Route>
+      <Route path="/admin/recommendation" exact>
+        <Recomendation />
       </Route>
     </div>
   );
