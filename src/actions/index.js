@@ -1,13 +1,18 @@
 import coreApi from "../api/coreApi";
+import { v4 } from "uuid";
 import {
+  ADD_RECOMENDATION,
   ADD_RULE,
   DELETE_RULE,
   FETCH_ALL_QUESTIONNAIRE,
   FETCH_QUESTIONNAIRE,
+  FETCH_RECOMENDATIONS,
   FETCH_RULES,
   RESET_QUESTIONNAIRE,
   UPDATE_LOADING,
   UPDATE_QUESTIONNAIRE,
+  UPDATE_RECOMENDATION,
+  DELETE_RECOMENDATION,
 } from "./types";
 
 export const fetchQuestionnaire = (id) => {
@@ -89,5 +94,37 @@ export const addQuestionnaire = (formValues) => {
     dispatch({ type: UPDATE_LOADING, payload: true });
     await coreApi.post(`/questionnaire/`, formValues);
     dispatch({ type: UPDATE_LOADING, payload: false });
+  };
+};
+
+export const addRecomendation = (recomendation, secondRecomendation) => {
+  return async (dispatch) => {
+    const _id = new v4();
+    dispatch({
+      type: ADD_RECOMENDATION,
+      payload: { _id, recomendation, secondRecomendation },
+    });
+    //await coreApi.post(`/Recomendation/`, formValues);
+  };
+};
+
+export const updateRecomendation = (formValues) => {
+  return async (dispatch) => {
+    dispatch({ type: UPDATE_RECOMENDATION, payload: formValues });
+    //await coreApi.put(`/Recomendation/`, formValues);
+  };
+};
+
+export const deleteRecomendation = (id) => {
+  return async (dispatch) => {
+    dispatch({ type: DELETE_RECOMENDATION, payload: id });
+    //await coreApi.put(`/Recomendation/`, formValues);
+  };
+};
+
+export const fetchRecomendation = () => {
+  return async (dispatch) => {
+    dispatch({ type: FETCH_RECOMENDATIONS, payload: [] });
+    //await coreApi.put(`/Recomendation/`, formValues);
   };
 };

@@ -7,7 +7,6 @@ import {
 } from "../actions/types";
 
 const questionnaireReducer = (state = { all: [] }, action) => {
-  console.log(action);
   switch (action.type) {
     case UPDATE_QUESTIONNAIRE || ADD_QUESTIONNAIRE:
       return { ...state, current: action.payload };
