@@ -19,10 +19,15 @@ function AddModal({
   const [secondRecomendation, setSecondRecomendation] = useState("");
 
   const save = () => {
-    addRecomendation(recomendation, secondRecomendation);
+    console.log(current);
+    if (current || current?._id) {
+      updateRecomendation(current._id, recomendation, secondRecomendation);
+    } else {
+      addRecomendation(recomendation, secondRecomendation);
+    }
     onDismiss();
   };
-
+  console.log(current);
   useEffect(() => {
     setSecondRecomendation(current?.secondRecomendation);
     setRecomendation(current?.recomendation);
@@ -65,4 +70,5 @@ const mapStateToProp = (state) => {
 export default connect(mapStateToProp, {
   fetchRecomendation,
   addRecomendation,
+  updateRecomendation,
 })(AddModal);

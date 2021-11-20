@@ -7,8 +7,16 @@ import {
 
 const recomendationReducer = (state = { all: [], current: null }, action) => {
   switch (action.type) {
-    case ADD_RECOMENDATION || UPDATE_RECOMENDATION:
+    case ADD_RECOMENDATION:
       return { all: [...state.all, action.payload] };
+    case UPDATE_RECOMENDATION:
+      return {
+        all: [
+          ...state.all.map((x) =>
+            x._id === action.payload._id ? action.payload : x
+          ),
+        ],
+      };
     case FETCH_RECOMENDATIONS:
       return { all: action.payload };
     case DELETE_RECOMENDATION:

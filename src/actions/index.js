@@ -1,5 +1,5 @@
 import coreApi from "../api/coreApi";
-import { v4 } from "uuid";
+
 import {
   ADD_RECOMENDATION,
   ADD_RULE,
@@ -14,6 +14,7 @@ import {
   UPDATE_RECOMENDATION,
   DELETE_RECOMENDATION,
 } from "./types";
+import { ObjectId } from "bson";
 
 export const fetchQuestionnaire = (id) => {
   return async (dispatch) => {
@@ -99,32 +100,49 @@ export const addQuestionnaire = (formValues) => {
 
 export const addRecomendation = (recomendation, secondRecomendation) => {
   return async (dispatch) => {
-    const _id = new v4();
+    const _id = new ObjectId().toString();
     dispatch({
       type: ADD_RECOMENDATION,
       payload: { _id, recomendation, secondRecomendation },
     });
-    //await coreApi.post(`/Recomendation/`, formValues);
+    await coreApi.post(`/recomendation/`, {
+      _id,
+      recomendation,
+      secondRecomendation,
+    });
   };
 };
 
-export const updateRecomendation = (formValues) => {
+export const updateRecomendation = (
+  _id,
+  recomendation,
+  secondRecomendation
+) => {
   return async (dispatch) => {
-    dispatch({ type: UPDATE_RECOMENDATION, payload: formValues });
-    //await coreApi.put(`/Recomendation/`, formValues);
+    dispatch({
+      type: UPDATE_RECOMENDATION,
+      payload: { _id, recomendation, secondRecomendation },
+    });
+    await coreApi.put(`/recomendation/`, {
+      _id,
+      recomendation,
+      secondRecomendation,
+    });
   };
 };
 
 export const deleteRecomendation = (id) => {
   return async (dispatch) => {
     dispatch({ type: DELETE_RECOMENDATION, payload: id });
-    //await coreApi.put(`/Recomendation/`, formValues);
+    await coreApi.delete(`/recomendation/${id}`);
   };
 };
 
 export const fetchRecomendation = () => {
   return async (dispatch) => {
-    dispatch({ type: FETCH_RECOMENDATIONS, payload: [] });
-    //await coreApi.put(`/Recomendation/`, formValues);
+    dispatch({ type: UPDATE_LOADING, payload: true });
+    const result = await coreApi.get(`/recomendation/`);
+    dispatch({ type: FETCH_RECOMENDATIONS, payload: result.data ?? [] });
+    dispatch({ type: UPDATE_LOADING, payload: false });
   };
 };

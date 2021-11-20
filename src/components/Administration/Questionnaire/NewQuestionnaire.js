@@ -109,7 +109,6 @@ const NewQuestionnaire = (props) => {
   };
 
   const onSubmit = (formValues) => {
-    console.log(formValues);
     props.saveOrUpdate(formValues);
   };
 

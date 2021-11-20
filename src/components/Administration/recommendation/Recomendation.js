@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { fetchRecomendation, deleteRecomendation } from "../../../actions";
+import Loading from "../../Global/Loading";
 
 import AddModal from "./AddModal";
 
@@ -9,6 +10,7 @@ function Recomendation({
   recomendations,
   current,
   deleteRecomendation,
+  loading,
 }) {
   const [addModal, setAddModal] = useState({ show: false });
 
@@ -18,7 +20,20 @@ function Recomendation({
         <tr>
           <td>{recomendation.recomendation}</td>
           <td>{recomendation.secondRecomendation}</td>
-          <td>{recomendation.secondRecomendation}</td>
+          <td>
+            <button
+              onClick={() =>
+                setAddModal({ show: true, current: recomendation })
+              }
+            >
+              Editar
+            </button>
+          </td>
+          <td className="right aligned">
+            <button onClick={() => deleteRecomendation(recomendation._id)}>
+              Eliminar
+            </button>
+          </td>
         </tr>
       );
     });
@@ -27,10 +42,19 @@ function Recomendation({
   useEffect(() => {
     fetchRecomendation();
   }, []);
+
+  if (loading) {
+    return (
+      <div className={`ui  active  inverted dimmer`}>
+        <div className="ui text loader">Cargando</div>
+      </div>
+    );
+  }
   return (
     <div classNameName="ui segment">
       <AddModal
         show={addModal.show}
+        current={addModal.current}
         onDismiss={() => setAddModal({ ...addModal, show: false })}
       />
       <table className="ui celled   table">
@@ -38,6 +62,8 @@ function Recomendation({
           <tr>
             <th>Recomendación</th>
             <th>Recomendación Alternativa</th>
+            <th className="collapsing"> </th>
+            <th className="collapsing"> </th>
           </tr>
         </thead>
         <tbody>{renderRecomendations()}</tbody>
@@ -65,6 +91,7 @@ const mapStateToProp = (state) => {
   return {
     recomendations: state.recomendations.all,
     current: state.recomendations.current,
+    loading: state.loading,
   };
 };
 
