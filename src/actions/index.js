@@ -32,10 +32,9 @@ export const saveOrUpdate = (formValues) => {
       const response = await coreApi.put(`/questionnaire/`, {
         data: JSON.stringify(formValues),
       });
-      console.log(response.data);
       dispatch({ type: UPDATE_QUESTIONNAIRE, payload: response.data });
     } else {
-      const response = await coreApi.put(`/questionnaire`, {
+      const response = await coreApi.post(`/questionnaire`, {
         data: JSON.stringify(formValues),
       });
       dispatch({ type: UPDATE_QUESTIONNAIRE, payload: response.data });
