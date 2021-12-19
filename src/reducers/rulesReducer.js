@@ -1,4 +1,9 @@
-import { ADD_RULE, DELETE_RULE, FETCH_RULES } from "../actions/types";
+import {
+  ADD_RULE,
+  DELETE_RULE,
+  FETCH_RULES,
+  UPDATE_RULE,
+} from "../actions/types";
 
 const rulesReducer = (state = [], action) => {
   switch (action.type) {
@@ -8,6 +13,11 @@ const rulesReducer = (state = [], action) => {
       return state.filter((rule) => rule._id !== action.payload);
     case ADD_RULE:
       return [...state, { ...action.payload }];
+    case UPDATE_RULE:
+      const rulesUpdated = state.map((rule) =>
+        rule._id !== action.payload._id ? rule : action.payload
+      );
+      return rulesUpdated;
     default:
       return state;
   }

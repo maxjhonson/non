@@ -2,9 +2,16 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { fetchQuestionnaire, fetchRules } from "../../actions";
+import {
+  fetchQuestionnaire,
+  fetchRules,
+  fetchRecomendation,
+  updateQuestionnaire,
+} from "../../../actions";
+import AddCalificationRecomendationModal from "./AddCalificationRecomendationModal";
 
 import AddRuleModal from "./AddRuleModal";
+import AddRuleRecomendationModal from "./AddRuleRecomendationModal";
 import DeleteRuleModal from "./DeleteRuleModal";
 
 function AnswersValue({
@@ -13,19 +20,40 @@ function AnswersValue({
   fetchRules,
   rules,
   loading,
+  fetchRecomendation,
+  recomendations,
+  updateQuestionnaire,
 }) {
   const { id } = useParams();
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showRecomendationModal, setShowRecomendationModal] = useState(false);
+  const [showAddRuleRecomendation, setShowAddRuleRecomendation] =
+    useState(false);
   const [selectedRule, setSelectedRule] = useState(null);
   useEffect(() => {
     fetchRules(id);
     fetchQuestionnaire(id);
+    fetchRecomendation();
   }, []);
 
   const deleteRule = (rule) => {
     setSelectedRule(rule);
     setShowDeleteModal(true);
+  };
+
+  const addRuleRecomendation = (rule) => {
+    setSelectedRule(rule);
+    setShowAddRuleRecomendation(true);
+  };
+
+  const closeAddRuleRecomendationModal = () => {
+    setSelectedRule(null);
+    setShowAddRuleRecomendation(false);
+  };
+
+  const closeShowRecomendationModal = () => {
+    setShowRecomendationModal(false);
   };
 
   const renderRules = () => {
@@ -37,15 +65,18 @@ function AnswersValue({
             <div className="detail">Valor: {rule.ruleValue}</div>
           </div>
           {renderQuestionsRule(rule.questionsRule)}
-          <div className="ui buttons">
-            <button
-              className="ui small negative button"
-              onClick={() => deleteRule(rule)}
-            >
-              <i className="trash small icon"></i>
-              {/*Delete*/}
-            </button>
-          </div>
+          <button
+            className="ui small primary button"
+            onClick={() => addRuleRecomendation(rule)}
+          >
+            Recomendación
+          </button>
+          <button
+            className="ui small negative button"
+            onClick={() => deleteRule(rule)}
+          >
+            <i className="trash small icon"></i>Eliminar
+          </button>
         </div>
       );
     });
@@ -105,6 +136,12 @@ function AnswersValue({
           >
             Agregar Regla
           </button>
+          <button
+            className="ui primary button"
+            onClick={() => setShowRecomendationModal(true)}
+          >
+            Recomendacion por Puntuacion
+          </button>
         </div>
       </div>
 
@@ -120,6 +157,22 @@ function AnswersValue({
         onDismiss={onDismiss}
         selectedRule={selectedRule}
       />
+
+      <AddRuleRecomendationModal
+        show={showAddRuleRecomendation}
+        onDismiss={closeAddRuleRecomendationModal}
+        recomendations={recomendations}
+        selectedRule={selectedRule}
+      />
+      {questionnaire && showRecomendationModal && (
+        <AddCalificationRecomendationModal
+          show={showRecomendationModal}
+          onDismiss={closeShowRecomendationModal}
+          recomendations={recomendations}
+          questionnaire={questionnaire}
+          updateQuestionnaire={updateQuestionnaire}
+        />
+      )}
     </div>
   );
 }
@@ -129,9 +182,13 @@ const mapStateToProps = (state) => {
     loading: state.loading,
     questionnaire: state.questionnaires.current,
     rules: state.rules,
+    recomendations: state.recomendations.all,
   };
 };
 
-export default connect(mapStateToProps, { fetchQuestionnaire, fetchRules })(
-  AnswersValue
-);
+export default connect(mapStateToProps, {
+  fetchQuestionnaire,
+  fetchRules,
+  fetchRecomendation,
+  updateQuestionnaire,
+})(AnswersValue);

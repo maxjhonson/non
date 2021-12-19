@@ -4,7 +4,7 @@ import "./Modal.css";
 
 function Modal({ children, show, onDismiss }) {
   if (!show) return null;
-  window.scroll(0, 0);
+  //window.scroll(0, 0);
 
   return ReactDom.createPortal(
     <div className="globa-modal" onClick={onDismiss}>

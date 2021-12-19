@@ -4,10 +4,10 @@ import arrayMutators from "final-form-arrays";
 import { FieldArray } from "react-final-form-arrays";
 import createDecorator from "final-form-calculate";
 import { getIn } from "final-form";
-import { addRule } from "../../actions";
+import { addRule } from "../../../actions";
 import { connect } from "react-redux";
 import { ObjectID } from "bson";
-import Modal from "../Modal/Modal";
+import Modal from "../../Modal/Modal";
 
 const AddRuleModal = ({
   questionnaire,

@@ -1,7 +1,7 @@
 import React from "react";
 import { connect } from "react-redux";
-import { deleteRule } from "../../actions";
-import Modal from "../Modal/Modal";
+import { deleteRule } from "../../../actions";
+import Modal from "../../Modal/Modal";
 
 const DeleteRuleModal = ({ show, onDismiss, deleteRule, selectedRule }) => {
   const onDeleteRuleClick = async () => {

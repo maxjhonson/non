@@ -13,6 +13,7 @@ import {
   UPDATE_QUESTIONNAIRE,
   UPDATE_RECOMENDATION,
   DELETE_RECOMENDATION,
+  UPDATE_RULE,
 } from "./types";
 import { ObjectId } from "bson";
 
@@ -67,10 +68,17 @@ export const fetchRules = (formId) => {
 
 export const addRule = (rule) => {
   return async (dispatch) => {
-    dispatch({ type: UPDATE_LOADING, payload: true });
+    //dispatch({ type: UPDATE_LOADING, payload: true });
     dispatch({ type: ADD_RULE, payload: rule });
     await coreApi.post("/rule", rule);
-    dispatch({ type: UPDATE_LOADING, payload: false });
+    //dispatch({ type: UPDATE_LOADING, payload: false });
+  };
+};
+
+export const updateRule = (rule) => {
+  return async (dispatch) => {
+    dispatch({ type: UPDATE_RULE, payload: rule });
+    await coreApi.put("/rule", rule);
   };
 };
 
@@ -83,9 +91,11 @@ export const deleteRule = (id, formId) => {
 
 export const updateQuestionnaire = (id, formValues) => {
   return async (dispatch) => {
-    dispatch({ type: UPDATE_LOADING, payload: true });
-    await coreApi.put((`/questionnaire/${id}`, formValues));
-    dispatch({ type: UPDATE_LOADING, payload: false });
+    console.log(id);
+    //dispatch({ type: UPDATE_LOADING, payload: true });
+    dispatch({ type: UPDATE_QUESTIONNAIRE, payload: formValues });
+    await coreApi.put(`/questionnaire/`, formValues);
+    //dispatch({ type: UPDATE_LOADING, payload: false });
   };
 };
 

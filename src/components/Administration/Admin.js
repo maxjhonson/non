@@ -1,9 +1,9 @@
 import React from "react";
 import { Route } from "react-router";
 import { Link } from "react-router-dom";
+import AnswersValue from "./answersValue/AnswersValue";
 import NewQuestionnaire from "./Questionnaire/NewQuestionnaire";
 import QuestionnaireList from "./Questionnaire/QuestionnaireList";
-import AnswersValue from "./AnswersValue";
 import Recomendation from "./recommendation/Recomendation";
 
 function Admin() {
