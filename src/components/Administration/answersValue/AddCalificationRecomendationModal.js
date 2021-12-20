@@ -15,24 +15,41 @@ function AddCalificationRecomendationModal({
 }) {
   const [initialValues, setInitialValues] = useState(recomendations);
   const [byCalification, setByCalification] = useState([]);
+  const [onEditId, setOnEditId] = useState("");
   const onSubmit = (fieldValues) => {
-    console.log(fieldValues);
-
     const recomendationsByCalification = byCalification ?? [];
     const selectedRecomendations = fieldValues.recomendations.filter(
       (x) => x.selected === true
     );
-    const newQuestionnaire = {
-      ...questionnaire,
-      recomendationsByCalification: [
-        ...recomendationsByCalification,
-        {
-          ...fieldValues,
-          _id: new ObjectId().toString(),
-          recomendations: selectedRecomendations,
-        },
-      ],
-    };
+
+    let newQuestionnaire = {};
+
+    if (fieldValues._id) {
+      const newrecomendationsByCalification = recomendationsByCalification.map(
+        (rec) => {
+          return rec._id === fieldValues._id
+            ? { ...fieldValues, recomendations: selectedRecomendations }
+            : rec;
+        }
+      );
+      newQuestionnaire = {
+        ...questionnaire,
+        recomendationsByCalification: [...newrecomendationsByCalification],
+      };
+    } else {
+      newQuestionnaire = {
+        ...questionnaire,
+        recomendationsByCalification: [
+          ...recomendationsByCalification,
+          {
+            ...fieldValues,
+            _id: new ObjectId().toString(),
+            recomendations: selectedRecomendations,
+          },
+        ],
+      };
+    }
+
     setByCalification(newQuestionnaire?.recomendationsByCalification);
     setInitialValues({
       startRange: "",
@@ -40,10 +57,13 @@ function AddCalificationRecomendationModal({
       recomendations: recomendations,
     });
     updateQuestionnaire(questionnaire?._id, newQuestionnaire);
+
+    setOnEditId("");
   };
 
   const edit = (rec) => {
-    setByCalification(byCalification.filter((x) => x._id !== rec._id));
+    setOnEditId(rec._id);
+    // setByCalification(byCalification.filter((x) => x._id !== rec._id));
     const recSelectedIds = rec.recomendations.map((r) => r._id);
 
     const recomendationsWithSelected = recomendations.map((rec) => {
@@ -52,6 +72,7 @@ function AddCalificationRecomendationModal({
         : rec;
     });
     setInitialValues({
+      _id: rec._id,
       startRange: rec.startRange,
       endRange: rec.endRange,
       recomendations: recomendationsWithSelected,
@@ -81,11 +102,13 @@ function AddCalificationRecomendationModal({
                   <tbody>
                     {byCalification.map((rec) => {
                       return (
-                        <tr>
+                        <tr key={rec._id}>
                           <td>
                             <button
                               type="button"
-                              className="ui button"
+                              className={`ui ${
+                                rec._id === onEditId ? "primary" : ""
+                              } button`}
                               onClick={() => edit(rec)}
                             >
                               {`Rango: ${rec.startRange} - ${rec.endRange}`}
