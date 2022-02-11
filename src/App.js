@@ -4,7 +4,7 @@ import "bootstrap/dist/js/bootstrap.js";
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 import Admin from "./components/administration/Admin";
-import Custumer from "./components/custumer/Custumer";
+//import Custumer from "./components/custumer/Custumer";
 
 window.jQuery = $;
 window.$ = $;
@@ -21,7 +21,7 @@ function App() {
             return <Redirect to="/c" />;
           }}
         ></Route>
-        <Route path="/c" component={Custumer}></Route>
+        <Route path="/c" component={null}></Route>
         <Route path="/admin" component={Admin}></Route>
       </Switch>
     </Router>
