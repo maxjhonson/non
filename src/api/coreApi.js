@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "https://consultateapi.herokuapp.com/",
+  baseURL: process.env.REACT_APP_BASE_URL,
 });
 
 //https://consultateapi.herokuapp.com/

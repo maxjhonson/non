@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Form, Field } from "react-final-form";
 import AddQuestionModal from "./AddQuestionModal";
-import arrayMutators from "final-form-arrays";
+import arrayMutators, { move } from "final-form-arrays";
 import { FieldArray } from "react-final-form-arrays";
 import { getIn } from "final-form";
 import { SimpleSpan } from "../../Global/CustomInputs";
@@ -11,9 +11,12 @@ import {
   fetchAllQuestionnaires,
   fetchQuestionnaire,
   resetQuestionnaire,
-  saveOrUpdate,
+  addQuestionnaire,
+  updateQuestionnaire,
 } from "../../../actions";
 import { useParams } from "react-router";
+import { useHistory } from "react-router-dom";
+import swal from "sweetalert";
 
 const renderAnswers = (name) => {
   return (
@@ -37,11 +40,10 @@ const NewQuestionnaire = (props) => {
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [dependentModal, setDependentModal] = useState({ visible: false });
   const { id } = useParams();
+  const a = useHistory();
 
   const addQuestionModal = (question, index) => {
-    !!question
-      ? setSelectedQuestion({ ...question, index })
-      : setSelectedQuestion(null);
+    !!question ? setSelectedQuestion({ ...question, index }) : setSelectedQuestion(null);
     setShowAddNewQuestion(true);
   };
   const dependantModalHandle = (index, formValues) => {
@@ -62,12 +64,38 @@ const NewQuestionnaire = (props) => {
     props.fetchAllQuestionnaires();
   }, []);
 
+  useEffect(() => {
+    if (props.error) {
+      swal(props.error, "", "error");
+    }
+  }, [props.error]);
+
   useEffect(() => {}, [props.questionnaire]);
 
   const renderQuestions = (formValues, name, index, fields) => {
     return (
       <tr key={name}>
         <td>{index + 1}</td>
+        <td>
+          <div class="ui vertical  icon buttons mini">
+            <button
+              type="button"
+              class="ui button"
+              onClick={() => fields.move(index, index - 1)}
+              disabled={index === 0}
+            >
+              <i class="sort up icon"></i>
+            </button>
+            <button
+              type="button"
+              class="ui button"
+              onClick={() => fields.move(index, index + 1)}
+              disabled={index === fields.length - 1}
+            >
+              <i class="sort down icon"></i>
+            </button>
+          </div>
+        </td>
         <td>
           <Field name={`${name}.text`} render={SimpleSpan} />
         </td>
@@ -108,22 +136,18 @@ const NewQuestionnaire = (props) => {
     );
   };
 
-  const onSubmit = (formValues) => {
-    props.saveOrUpdate(formValues);
+  const onSubmit = async (formValues) => {
+    if (!formValues.isNew) props.updateQuestionnaire(formValues);
+    else {
+      props.addQuestionnaire(formValues);
+      //a.replace(`new/${props.questionnaire?._id}`);
+    }
   };
-
-  if (props.loading) {
-    return (
-      <div className={`ui  active  inverted dimmer`}>
-        <div className="ui text loader">Cargando</div>
-      </div>
-    );
-  }
 
   return (
     <div className="ui segment">
       <Form
-        initialValues={props.questionnaire}
+        initialValues={props.questionnaire ?? { isNew: true }}
         onSubmit={onSubmit}
         mutators={{
           ...arrayMutators,
@@ -165,25 +189,24 @@ const NewQuestionnaire = (props) => {
                   <div>
                     <div className="field">
                       <label>Nombre del Formulario</label>
-                      <input
-                        {...input}
-                        type="text"
-                        placeholder="Nombre del formulario"
-                      />
+                      <input {...input} type="text" placeholder="Nombre del formulario" />
 
                       {meta.error && meta.touched && (
-                        <div className="ui pointing red basic label">
-                          {meta.error}
-                        </div>
+                        <div className="ui pointing red basic label">{meta.error}</div>
                       )}
                     </div>
                   </div>
                 )}
               </Field>
+              {/* <div class="ui checkbox">
+                <Field name="principalForm" component="input" type="checkbox" />
+                <label>Marcar este formulario como principal</label>
+              </div> */}
               <table className="ui compact celled definition table">
                 <thead>
                   <tr>
                     <th className="collapsing">#</th>
+                    <th className="collapsing">Orden</th>
                     <th>Pregunta</th>
                     <th>Respuestas</th>
                     <th className="collapsing">Dependientes</th>
@@ -195,15 +218,11 @@ const NewQuestionnaire = (props) => {
                   {({ fields, meta }) => {
                     if (fields.length === 0 && meta.touched)
                       return (
-                        <div className="ui pointing red basic label">
-                          {meta.error}
-                        </div>
+                        <div className="ui pointing red basic label">{meta.error}</div>
                       );
                     return fields.map((name, index) => {
                       return (
-                        <tbody>
-                          {renderQuestions(values, name, index, fields)}
-                        </tbody>
+                        <tbody>{renderQuestions(values, name, index, fields)}</tbody>
                       );
                     });
                   }}
@@ -222,17 +241,18 @@ const NewQuestionnaire = (props) => {
                   </tr>
                 </tfoot>
               </table>
-              <button
-                className="ui primary button"
-                onClick={handleSubmit}
-                type="submit"
-              >
+              <button className="ui primary button" onClick={handleSubmit} type="submit">
                 Guardar Formulario
               </button>
             </div>
           </form>
         )}
       ></Form>
+      {props.loading && (
+        <div className={`ui  active  inverted dimmer`}>
+          <div className="ui text loader">Cargando</div>
+        </div>
+      )}
     </div>
   );
 };
@@ -252,13 +272,15 @@ const mapsStateToProps = (state) => {
   return {
     questionnaires: state.questionnaires?.all,
     questionnaire: state.questionnaires?.current,
-    loading: state.loading,
+    loading: state.questionnaires.loading,
+    error: state.questionnaires.error,
   };
 };
 
 export default connect(mapsStateToProps, {
   fetchAllQuestionnaires,
   fetchQuestionnaire,
-  saveOrUpdate,
+  addQuestionnaire,
   resetQuestionnaire,
+  updateQuestionnaire,
 })(NewQuestionnaire);

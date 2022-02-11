@@ -4,11 +4,11 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { fetchAllQuestionnaires, resetQuestionnaire } from "../../../actions";
 
-
 const QuestionnaireList = ({
   questionnaires,
   fetchAllQuestionnaires,
   resetQuestionnaire,
+  loading,
 }) => {
   useEffect(async () => {
     fetchAllQuestionnaires();
@@ -68,14 +68,17 @@ const QuestionnaireList = ({
         </thead>
         <tbody>{renderQuestionnaires()}</tbody>
       </table>
-      {!questionnaires && <span>Cargando Formularios.......</span>}
+
+      {loading && <span>Cargando Formularios.......</span>}
     </div>
   );
 };
 
 const mapStateToProps = (state) => {
-  console.log(state);
-  return { questionnaires: state.questionnaires.all };
+  return {
+    questionnaires: state.questionnaires.all,
+    loading: state.questionnaires.loading,
+  };
 };
 
 export default connect(mapStateToProps, {

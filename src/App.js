@@ -1,15 +1,10 @@
 import "bootstrap/dist/css/bootstrap.css";
 import * as $ from "jquery/dist/jquery.js";
 import "bootstrap/dist/js/bootstrap.js";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
-import Admin from "./components/Administration/Admin";
-import Custumer from "./components/Custumer/Custumer";
+import Admin from "./components/administration/Admin";
+import Custumer from "./components/custumer/Custumer";
 
 window.jQuery = $;
 window.$ = $;

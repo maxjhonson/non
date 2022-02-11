@@ -5,15 +5,25 @@ import {
   ADD_RULE,
   DELETE_RULE,
   FETCH_ALL_QUESTIONNAIRE,
+  FETCH_ALL_QUESTIONNAIRE_SUCCESS,
+  FETCH_ALL_QUESTIONNAIRE_ERROR,
   FETCH_QUESTIONNAIRE,
+
+  //FETCH_QUESTIONNAIRE_SUCCESS,
+  //FETCH_QUESTIONNAIRE_ERROR,
   FETCH_RECOMENDATIONS,
   FETCH_RULES,
   RESET_QUESTIONNAIRE,
   UPDATE_LOADING,
   UPDATE_QUESTIONNAIRE,
+  UPDATE_QUESTIONNAIRE_SUCCESS,
+  UPDATE_QUESTIONNAIRE_ERROR,
   UPDATE_RECOMENDATION,
   DELETE_RECOMENDATION,
   UPDATE_RULE,
+  ADD_QUESTIONNAIRE,
+  ADD_QUESTIONNAIRE_SUCCESS,
+  ADD_QUESTIONNAIRE_ERROR,
 } from "./types";
 import { ObjectId } from "bson";
 
@@ -52,9 +62,9 @@ export const resetQuestionnaire = () => {
 
 export const fetchAllQuestionnaires = () => {
   return async (dispatch) => {
-    dispatch({ type: UPDATE_LOADING, payload: true });
+    dispatch({ type: FETCH_ALL_QUESTIONNAIRE });
     const response = await coreApi.get(`/questionnaire/`);
-    dispatch({ type: FETCH_ALL_QUESTIONNAIRE, payload: response.data });
+    dispatch({ type: FETCH_ALL_QUESTIONNAIRE_SUCCESS, payload: response.data });
     dispatch({ type: UPDATE_LOADING, payload: false });
   };
 };
@@ -68,7 +78,7 @@ export const fetchRules = (formId) => {
 
 export const addRule = (rule) => {
   return async (dispatch) => {
-    //dispatch({ type: UPDATE_LOADING, payload: true });
+    dispatch({ type: UPDATE_QUESTIONNAIRE });
     dispatch({ type: ADD_RULE, payload: rule });
     await coreApi.post("/rule", rule);
     //dispatch({ type: UPDATE_LOADING, payload: false });
@@ -89,21 +99,23 @@ export const deleteRule = (id, formId) => {
   };
 };
 
-export const updateQuestionnaire = (id, formValues) => {
+export const updateQuestionnaire = (formValues) => {
   return async (dispatch) => {
-    console.log(id);
-    //dispatch({ type: UPDATE_LOADING, payload: true });
-    dispatch({ type: UPDATE_QUESTIONNAIRE, payload: formValues });
-    await coreApi.put(`/questionnaire/`, formValues);
-    //dispatch({ type: UPDATE_LOADING, payload: false });
+    dispatch({ type: UPDATE_QUESTIONNAIRE });
+    const response = await coreApi.put(`/questionnaire/`, formValues);
+    dispatch({ type: UPDATE_QUESTIONNAIRE_SUCCESS, payload: response.data });
   };
 };
 
 export const addQuestionnaire = (formValues) => {
   return async (dispatch) => {
-    dispatch({ type: UPDATE_LOADING, payload: true });
-    await coreApi.post(`/questionnaire/`, formValues);
-    dispatch({ type: UPDATE_LOADING, payload: false });
+    dispatch({ type: ADD_QUESTIONNAIRE });
+    try {
+      const response = await coreApi.post(`/questionnaire/`, formValues);
+      dispatch({ type: ADD_QUESTIONNAIRE_SUCCESS, payload: response.data });
+    } catch (err) {
+      dispatch({ type: ADD_QUESTIONNAIRE_ERROR });
+    }
   };
 };
 
@@ -122,11 +134,7 @@ export const addRecomendation = (recomendation, secondRecomendation) => {
   };
 };
 
-export const updateRecomendation = (
-  _id,
-  recomendation,
-  secondRecomendation
-) => {
+export const updateRecomendation = (_id, recomendation, secondRecomendation) => {
   return async (dispatch) => {
     dispatch({
       type: UPDATE_RECOMENDATION,
