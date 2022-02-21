@@ -17,6 +17,7 @@ import {
 import { useParams } from "react-router";
 import { useHistory } from "react-router-dom";
 import swal from "sweetalert";
+import { FieldSelectInput, FieldTextInput } from "../../commond/CustomFields";
 
 const renderAnswers = (name) => {
   return (
@@ -184,24 +185,18 @@ const NewQuestionnaire = (props) => {
               data={dependentModal}
             />
             <div className="ui form">
-              <Field name="formName">
-                {({ input, meta }) => (
-                  <div>
-                    <div className="field">
-                      <label>Nombre del Formulario</label>
-                      <input {...input} type="text" placeholder="Nombre del formulario" />
+              <FieldTextInput name="formName" label="Nombre del Formulario" />
 
-                      {meta.error && meta.touched && (
-                        <div className="ui pointing red basic label">{meta.error}</div>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </Field>
-              {/* <div class="ui checkbox">
-                <Field name="principalForm" component="input" type="checkbox" />
-                <label>Marcar este formulario como principal</label>
-              </div> */}
+              <FieldSelectInput
+                name="formType"
+                label="Tipo de formulario"
+                options={[
+                  { text: "Raiz", value: "root" },
+                  { text: "Principal", value: "principal" },
+                  { text: "Secundario", value: "nested" },
+                ]}
+              />
+
               <table className="ui compact celled definition table">
                 <thead>
                   <tr>
@@ -261,6 +256,9 @@ const formValidator = (values) => {
   const errors = {};
   if (!values.formName) {
     errors.formName = "Este campo es requerido";
+  }
+  if (!values.formType) {
+    errors.formType = "Este campo es requerido";
   }
   if (!values.questions) {
     errors.questions = "Es necesario al menos una pregunta";

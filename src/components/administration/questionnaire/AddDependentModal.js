@@ -37,6 +37,7 @@ function AddDependentModal({ onDismiss, data, update }) {
   }, [data]);
 
   const renderCurrentAnswers = () => {
+    console.log(questionnaires);
     const renderOptions = questionnaires?.map((questionnaire) => (
       <option value={questionnaire._id}> {questionnaire.formName}</option>
     ));
@@ -45,19 +46,13 @@ function AddDependentModal({ onDismiss, data, update }) {
         <tr>
           <td>{answer.text}</td>
           <td>
-            <Field
-              name={`answers[${i}][dependantForm]formId`}
-              component="select"
-            >
+            <Field name={`answers[${i}][dependantForm]formId`} component="select">
               <option value="">N/A</option>
               {renderOptions}
             </Field>
           </td>
           <td>
-            <Field
-              name={`answers[${i}][dependantForm]quantity`}
-              component="select"
-            >
+            <Field name={`answers[${i}][dependantForm]quantity`} component="select">
               <option value="">0</option>
               <option>1</option>
               <option>2</option>
@@ -119,10 +114,9 @@ function AddDependentModal({ onDismiss, data, update }) {
                           <FieldArray name={`${name}.answers`}>
                             {({ fields }) =>
                               fields.map((name, index) => {
-                                const isSelected =
-                                  current.dependantAnswers?.includes(
-                                    fields.value[index]._id
-                                  );
+                                const isSelected = current.dependantAnswers?.includes(
+                                  fields.value[index]._id
+                                );
                                 return (
                                   <li>
                                     <div class="ui checkbox">
