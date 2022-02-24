@@ -21,11 +21,7 @@ function Recomendation({
           <td>{recomendation.recomendation}</td>
           <td>{recomendation.secondRecomendation}</td>
           <td>
-            <button
-              onClick={() =>
-                setAddModal({ show: true, current: recomendation })
-              }
-            >
+            <button onClick={() => setAddModal({ show: true, current: recomendation })}>
               Editar
             </button>
           </td>
@@ -55,7 +51,7 @@ function Recomendation({
       <AddModal
         show={addModal.show}
         current={addModal.current}
-        onDismiss={() => setAddModal({ ...addModal, show: false })}
+        onDismiss={() => setAddModal({ ...addModal, show: false, current: {} })}
       />
       <table className="ui celled   table">
         <thead>
@@ -74,7 +70,12 @@ function Recomendation({
               <div
                 className="ui right floated small primary labeled icon button"
                 onClick={() =>
-                  setAddModal({ ...addModal, show: true, current: current })
+                  setAddModal({
+                    ...addModal,
+                    show: true,
+                    current: current,
+                    recomendations: recomendations,
+                  })
                 }
               >
                 <i className="pencil alternate icon"></i> Agregar Recomendación

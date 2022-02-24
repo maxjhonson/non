@@ -119,31 +119,58 @@ export const addQuestionnaire = (formValues) => {
   };
 };
 
-export const addRecomendation = (recomendation, secondRecomendation) => {
+export const addRecomendation = (
+  recomendation,
+  secondRecomendation,
+  magnitude,
+  asociatedRecomendations
+) => {
   return async (dispatch) => {
     const _id = new ObjectId().toString();
     dispatch({
       type: ADD_RECOMENDATION,
-      payload: { _id, recomendation, secondRecomendation },
+      payload: {
+        _id,
+        recomendation,
+        secondRecomendation,
+        magnitude,
+        asociatedRecomendations,
+      },
     });
     await coreApi.post(`/recomendation/`, {
       _id,
       recomendation,
       secondRecomendation,
+      magnitude,
+      asociatedRecomendations,
     });
   };
 };
 
-export const updateRecomendation = (_id, recomendation, secondRecomendation) => {
+export const updateRecomendation = (
+  _id,
+  recomendation,
+  secondRecomendation,
+  magnitude,
+  asociatedRecomendations
+) => {
   return async (dispatch) => {
     dispatch({
       type: UPDATE_RECOMENDATION,
-      payload: { _id, recomendation, secondRecomendation },
+      payload: {
+        _id,
+        recomendation,
+        secondRecomendation,
+        magnitude,
+        asociatedRecomendations,
+      },
     });
     await coreApi.put(`/recomendation/`, {
       _id,
       recomendation,
       secondRecomendation,
+      magnitude,
+      asociatedRecomendations,
     });
   };
 };
