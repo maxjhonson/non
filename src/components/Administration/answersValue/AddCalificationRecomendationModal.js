@@ -5,6 +5,14 @@ import Modal from "../../Modal/Modal";
 import arrayMutators from "final-form-arrays";
 import { FieldTextDisplay } from "../../commond/CustomFields";
 import { ObjectId } from "bson";
+import { connect } from "react-redux";
+import {
+  addGradeRecomendation,
+  fethAllGradeRecomendation,
+  updateGradeRecomendation,
+  deleteGradeRecomendation,
+} from "../../../actions";
+import Loader from "../../commond/Loader";
 
 function AddCalificationRecomendationModal({
   show,
@@ -12,80 +20,84 @@ function AddCalificationRecomendationModal({
   recomendations,
   questionnaire,
   updateQuestionnaire,
+  addGradeRecomendation,
+  fethAllGradeRecomendation,
+  allGradeRecomendation,
+  updateGradeRecomendation,
+  deleteGradeRecomendation,
+  isLoading,
 }) {
-  const [initialValues, setInitialValues] = useState(recomendations);
-  const [byCalification, setByCalification] = useState([]);
-  const [onEditId, setOnEditId] = useState("");
-  const onSubmit = (fieldValues) => {
-    const recomendationsByCalification = byCalification ?? [];
-    const selectedRecomendations = fieldValues.recomendations.filter(
-      (x) => x.selected === true
-    );
+  const [initialValues, setInitialValues] = useState({});
+  const [onEditId, setOnEditId] = useState(null);
 
-    let newQuestionnaire = {};
+  const onSubmit = async (fieldValues) => {
+    const startRange = fieldValues.startRange;
+    const endRange = fieldValues.endRange;
+    const selectedRecomendations = fieldValues.recomendations
+      .filter((x) => x.selected)
+      .map((x) => {
+        return x._id;
+      });
 
-    if (fieldValues._id) {
-      const newrecomendationsByCalification = recomendationsByCalification.map(
-        (rec) => {
-          return rec._id === fieldValues._id
-            ? { ...fieldValues, recomendations: selectedRecomendations }
-            : rec;
-        }
-      );
-      newQuestionnaire = {
-        ...questionnaire,
-        recomendationsByCalification: [...newrecomendationsByCalification],
-      };
+    const gradeRecomendation = {
+      _id: onEditId,
+      questionnaire: questionnaire._id,
+      startRange,
+      endRange,
+      recomendations: selectedRecomendations,
+    };
+
+    if (!onEditId) {
+      await addGradeRecomendation(gradeRecomendation);
     } else {
-      newQuestionnaire = {
-        ...questionnaire,
-        recomendationsByCalification: [
-          ...recomendationsByCalification,
-          {
-            ...fieldValues,
-            _id: new ObjectId().toString(),
-            recomendations: selectedRecomendations,
-          },
-        ],
-      };
+      await updateGradeRecomendation(gradeRecomendation);
+      setOnEditId(null);
     }
 
-    setByCalification(newQuestionnaire?.recomendationsByCalification);
+    resetForm();
+  };
+
+  useEffect(() => {}, []);
+
+  const deleteGrade = () => {
+    deleteGradeRecomendation(onEditId);
+    resetForm();
+  };
+
+  const resetForm = () => {
     setInitialValues({
       startRange: "",
       endRange: "",
-      recomendations: recomendations,
+      recomendations: [...recomendations],
     });
-    updateQuestionnaire(questionnaire?._id, newQuestionnaire);
-
-    setOnEditId("");
+    setOnEditId(null);
   };
 
-  const edit = (rec) => {
-    setOnEditId(rec._id);
-    // setByCalification(byCalification.filter((x) => x._id !== rec._id));
-    const recSelectedIds = rec.recomendations.map((r) => r._id);
-
-    const recomendationsWithSelected = recomendations.map((rec) => {
-      return recSelectedIds.includes(rec._id)
-        ? { ...rec, selected: true }
-        : rec;
+  const edit = (selectedGradeRecomendation) => {
+    setOnEditId(selectedGradeRecomendation._id);
+    const recomendationsWithSeleted = recomendations.map((recomendation) => {
+      const isSelected = selectedGradeRecomendation.recomendations.find(
+        (x) => x === recomendation._id
+      );
+      if (isSelected) return { ...recomendation, selected: true };
+      else return recomendation;
     });
     setInitialValues({
-      _id: rec._id,
-      startRange: rec.startRange,
-      endRange: rec.endRange,
-      recomendations: recomendationsWithSelected,
+      _id: selectedGradeRecomendation._id,
+      startRange: selectedGradeRecomendation.startRange,
+      endRange: selectedGradeRecomendation.endRange,
+      recomendations: recomendationsWithSeleted,
     });
   };
 
   useEffect(() => {
     setInitialValues({ recomendations: recomendations });
-    setByCalification(questionnaire.recomendationsByCalification ?? []);
+    fethAllGradeRecomendation(questionnaire._id);
   }, []);
 
   return (
     <Modal show={show} onDismiss={onDismiss}>
+      <Loader active={isLoading} />
       <Form
         onSubmit={onSubmit}
         mutators={{ ...arrayMutators }}
@@ -100,7 +112,7 @@ function AddCalificationRecomendationModal({
                     <th>Rangos</th>
                   </thead>
                   <tbody>
-                    {byCalification.map((rec) => {
+                    {allGradeRecomendation.map((rec) => {
                       return (
                         <tr key={rec._id}>
                           <td>
@@ -125,11 +137,7 @@ function AddCalificationRecomendationModal({
                   <div class="two fields">
                     <div class="field">
                       <label>Rango Inicial</label>
-                      <Field
-                        name="startRange"
-                        component="input"
-                        type="number"
-                      />
+                      <Field name="startRange" component="input" type="number" />
                     </div>
                     <div class="field">
                       <label>Rango Final</label>
@@ -152,14 +160,10 @@ function AddCalificationRecomendationModal({
                         {fields.map((name, index) => (
                           <tr>
                             <td>
-                              <FieldTextDisplay
-                                name={`${name}.recomendation`}
-                              />
+                              <FieldTextDisplay name={`${name}.recomendation`} />
                             </td>
                             <td>
-                              <FieldTextDisplay
-                                name={`${name}.secondRecomendation`}
-                              />
+                              <FieldTextDisplay name={`${name}.secondRecomendation`} />
                             </td>
                             <td>
                               <Field
@@ -175,10 +179,23 @@ function AddCalificationRecomendationModal({
                   </FieldArray>
                 </table>
                 <button class="ui primary button" type="submit">
-                  Agregar
+                  {!onEditId ? "Agregar" : "Actualzar"}
                 </button>
-                <button onClick={onDismiss} type="button" class="ui button">
+                <button
+                  disabled={!onEditId}
+                  onClick={resetForm}
+                  type="button"
+                  class="ui button"
+                >
                   Cancelar
+                </button>
+                <button
+                  disabled={!onEditId}
+                  onClick={deleteGrade}
+                  type="button"
+                  class="negative ui button"
+                >
+                  Eliminar
                 </button>
               </div>
             </div>
@@ -189,4 +206,16 @@ function AddCalificationRecomendationModal({
   );
 }
 
-export default AddCalificationRecomendationModal;
+const mapStateToProps = (state) => {
+  return {
+    allGradeRecomendation: state.gradeRecomendation?.all ?? [],
+    isLoading: state.gradeRecomendation.loading,
+  };
+};
+
+export default connect(mapStateToProps, {
+  fethAllGradeRecomendation,
+  addGradeRecomendation,
+  updateGradeRecomendation,
+  deleteGradeRecomendation,
+})(AddCalificationRecomendationModal);

@@ -24,6 +24,18 @@ import {
   ADD_QUESTIONNAIRE,
   ADD_QUESTIONNAIRE_SUCCESS,
   ADD_QUESTIONNAIRE_ERROR,
+  ADD_GRADE_RECOMENDATION,
+  ADD_GRADE_RECOMENDATION_SUCCESS,
+  ADD_GRADE_RECOMENDATION_ERROR,
+  FETCH_ALL_GRADE_RECOMENDATION,
+  FETCH_ALL_GRADE_RECOMENDATION_SUCCESS,
+  FETCH_ALL_GRADE_RECOMENDATION_ERROR,
+  UPDATE_GRADE_RECOMENDATION,
+  UPDATE_GRADE_RECOMENDATION_SUCCESS,
+  UPDATE_GRADE_RECOMENDATION_ERROR,
+  DELETE_GRADE_RECOMENDATION,
+  DELETE_GRADE_RECOMENDATION_SUCCESS,
+  DELETE_GRADE_RECOMENDATION_ERROR,
 } from "./types";
 import { ObjectId } from "bson";
 
@@ -188,5 +200,56 @@ export const fetchRecomendation = () => {
     const result = await coreApi.get(`/recomendation/`);
     dispatch({ type: FETCH_RECOMENDATIONS, payload: result.data ?? [] });
     dispatch({ type: UPDATE_LOADING, payload: false });
+  };
+};
+
+export const fethAllGradeRecomendation = (questionnaireId) => {
+  return async (dispatch) => {
+    dispatch({ type: FETCH_ALL_GRADE_RECOMENDATION });
+    try {
+      const result = await coreApi.get(
+        `/gradeRecomendation?questionnaireId=${questionnaireId}`
+      );
+      dispatch({ type: FETCH_ALL_GRADE_RECOMENDATION_SUCCESS, payload: result.data });
+    } catch {
+      dispatch({ type: FETCH_ALL_GRADE_RECOMENDATION_ERROR });
+    }
+  };
+};
+
+export const addGradeRecomendation = (gradeRecomendation) => {
+  return async (dispatch) => {
+    dispatch({ type: ADD_GRADE_RECOMENDATION });
+    try {
+      const result = await coreApi.post("/gradeRecomendation", gradeRecomendation);
+      console.log(result.data);
+      dispatch({ type: ADD_GRADE_RECOMENDATION_SUCCESS, payload: result.data });
+    } catch {
+      dispatch({ type: ADD_GRADE_RECOMENDATION_ERROR });
+    }
+  };
+};
+
+export const updateGradeRecomendation = (gradeRecomendation) => {
+  return async (dispatch) => {
+    dispatch({ type: UPDATE_GRADE_RECOMENDATION });
+    try {
+      await coreApi.put("/gradeRecomendation", gradeRecomendation);
+      dispatch({ type: UPDATE_GRADE_RECOMENDATION_SUCCESS, payload: gradeRecomendation });
+    } catch {
+      dispatch({ type: UPDATE_GRADE_RECOMENDATION_ERROR });
+    }
+  };
+};
+
+export const deleteGradeRecomendation = (id) => {
+  return async (dispatch) => {
+    dispatch({ type: DELETE_GRADE_RECOMENDATION });
+    try {
+      await coreApi.delete(`/gradeRecomendation/${id}`);
+      dispatch({ type: DELETE_GRADE_RECOMENDATION_SUCCESS, payload: id });
+    } catch {
+      dispatch({ type: DELETE_GRADE_RECOMENDATION_ERROR });
+    }
   };
 };
