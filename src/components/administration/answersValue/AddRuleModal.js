@@ -8,106 +8,31 @@ import { addRule } from "../../../actions";
 import { connect } from "react-redux";
 import { ObjectID } from "bson";
 import Modal from "../../Modal/Modal";
+import { FieldTextDisplay, FieldTextInput } from "../../commond/CustomFields";
+import AddRuleModalQuestionList from "./AddRuleModalQuestionList";
+import Loader from "../../commond/Loader";
 
 const AddRuleModal = ({
   questionnaire,
+  recomendations,
   addRule,
   onDismiss,
   selectedRule,
   show,
 }) => {
-  const [selectedAnswers, setSelectedAnswers] = useState([]);
+  const [initialValues, setInitialValues] = useState({});
   useEffect(() => {
-    //   setSelectedAnswers(selected);
-  }, [selectedRule]);
+    setInitialValues({
+      questions: questionnaire.questions,
+      recomendations: recomendations,
+      ruleValue: 0,
+    });
+  }, []);
+
   if (!questionnaire) return <div>Loading</div>;
 
-  const onSubmit = (formValue, e) => {
-    const questionsRule = formValue.questions
-      .filter((que) => que.hasAnswersRule)
-      .map((question) => {
-        const answers = question.answers
-          .filter((answer) => answer.addedToRule)
-          .map((answer) => {
-            return { text: answer.text, answerId: answer._id };
-          });
-
-        return {
-          text: question.text,
-          questionId: question._id,
-          answers: answers,
-        };
-      });
-    const data = {
-      _id: new ObjectID().toString(),
-      formId: formValue._id,
-      ruleName: formValue.ruleName,
-      ruleValue: formValue.ruleValue,
-      questionsRule: questionsRule,
-    };
-    addRule(data);
-    onDismiss();
-  };
-
-  const renderAnswerList = (name) => {
-    return (
-      <React.Fragment key={name}>
-        <div className="inline fields">
-          <div className="field">
-            <Field
-              name={`${name}.letter`}
-              render={(props) => {
-                return <h5 className="ui header">{props.input.value})</h5>;
-              }}
-            />
-          </div>
-          <div className="field">
-            <Field
-              name={`${name}.text`}
-              render={(props) => {
-                return <h5 className="ui header">{props.input.value}</h5>;
-              }}
-            />
-          </div>
-          <div className="field">
-            <Field
-              name={`${name}.addedToRule`}
-              render={(props) => renderCheckBox(props)}
-              type="checkbox"
-            />
-          </div>
-        </div>
-      </React.Fragment>
-    );
-  };
-
-  const renderQuestionList = (name) => {
-    return (
-      <div className="ui segment" key={name}>
-        <Field
-          name={`${name}.text`}
-          render={(props) => {
-            return <h5 className="ui header">{props.input.value}</h5>;
-          }}
-        />
-        <FieldArray name={`${name}.answers`}>
-          {({ fields }) =>
-            fields.map((name) => {
-              return renderAnswerList(name);
-            })
-          }
-        </FieldArray>
-      </div>
-    );
-  };
-
-  const renderCheckBox = (props, id) => {
-    return (
-      <div className="ui checkbox">
-        <input {...props.input} />
-        <label>Agregarla a la regla</label>
-      </div>
-    );
+  const onSubmit = (formValue) => {
+    console.log(formValue);
   };
 
   const renderRuleValue = (props) => {
@@ -117,13 +42,11 @@ const AddRuleModal = ({
     };
     return (
       <div className="inline field">
-        <label>Valor de la convinación Seleccionada</label>
+        <Loader active={false} />
+
+        <label>Valor de la combinación Seleccionada</label>
         <div className="ui buttons">
-          <button
-            className="ui button"
-            type="button"
-            onClick={() => onchange(-1)}
-          >
+          <button className="ui button" type="button" onClick={() => onchange(-1)}>
             -
           </button>
           <div className="or" data-text={props.input.value}></div>
@@ -139,21 +62,36 @@ const AddRuleModal = ({
     );
   };
 
-  const decorator = createDecorator({
-    field: /questions\[\d+\]\.answers\[\d+\]\.addedToRule/,
-    updates: (value, name, allValues) => {
-      const questionLastBracket = name.indexOf("]") + 1;
-      const questionsName = `${name.substring(0, questionLastBracket)}.answers`;
-      const propertyName = `${name.substring(
-        0,
-        questionLastBracket
-      )}.hasAnswersRule`;
-      const answers = getIn(allValues, questionsName);
-
-      const hasAnswersRule = answers.some((ans) => ans.addedToRule === true);
-      return { [propertyName]: hasAnswersRule };
+  const decorator = createDecorator(
+    {
+      field: /questions\[\d+\]\.answers\[\d+\]\.selected/,
+      updates: (value, name, allValues) => {
+        const answerId = getIn(allValues, name.replace("selected", "_id"));
+        const answersIds = getIn(allValues, "answersIds") ?? [];
+        if (value) {
+          answersIds.push(answerId);
+        } else {
+          const index = answersIds.indexOf(answerId);
+          answersIds.splice(index, 1);
+        }
+        return { answersIds: answersIds };
+      },
     },
-  });
+    {
+      field: /recomendations\[\d+\]\.selected/,
+      updates: (value, name, allValues) => {
+        const recomendationId = getIn(allValues, name.replace("selected", "_id"));
+        const recomendationsIds = getIn(allValues, "recomendationsIds") ?? [];
+        if (value) {
+          recomendationsIds.push(recomendationId);
+        } else {
+          const index = recomendationsIds.indexOf(recomendationId);
+          recomendationsIds.splice(index, 1);
+        }
+        return { recomendationsIds: recomendationsIds };
+      },
+    }
+  );
 
   return (
     <Modal show={show} onDismiss={onDismiss}>
@@ -161,21 +99,55 @@ const AddRuleModal = ({
         decorators={[decorator]}
         onSubmit={onSubmit}
         mutators={{ ...arrayMutators }}
-        initialValues={questionnaire}
+        initialValues={initialValues}
         render={({ handleSubmit }) => (
           <form onSubmit={handleSubmit} className="ui form">
             <div className="field">
               <label>Nombre de la regla:</label>
-              <Field name="ruleName" component="input" />
+              <FieldTextInput name="ruleName" />
             </div>
             <FieldArray name="questions">
               {({ fields }) =>
                 fields.map((name) => {
-                  return renderQuestionList(name);
+                  return <AddRuleModalQuestionList name={name} />;
                 })
               }
             </FieldArray>
             <Field name="ruleValue" render={renderRuleValue} />
+
+            <table class="ui celled table">
+              <thead>
+                <tr>
+                  <th>Recomendación</th>
+                  <th>Recomendación Alterna</th>
+                  <th></th>
+                </tr>
+              </thead>
+
+              <FieldArray name="recomendations">
+                {({ fields }) => (
+                  <tbody>
+                    {fields.map((name, index) => (
+                      <tr>
+                        <td>
+                          <FieldTextDisplay name={`${name}.recomendation`} />
+                        </td>
+                        <td>
+                          <FieldTextDisplay name={`${name}.secondRecomendation`} />
+                        </td>
+                        <td>
+                          <Field
+                            name={`${name}.selected`}
+                            component="input"
+                            type="checkbox"
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                )}
+              </FieldArray>
+            </table>
 
             <button className="ui primary button" type="submit">
               Agregar Regla

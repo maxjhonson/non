@@ -28,8 +28,7 @@ function AnswersValue({
   const [showModal, setShowModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRecomendationModal, setShowRecomendationModal] = useState(false);
-  const [showAddRuleRecomendation, setShowAddRuleRecomendation] =
-    useState(false);
+  const [showAddRuleRecomendation, setShowAddRuleRecomendation] = useState(false);
   const [selectedRule, setSelectedRule] = useState(null);
   useEffect(() => {
     fetchRules(id);
@@ -71,10 +70,7 @@ function AnswersValue({
           >
             Recomendación
           </button>
-          <button
-            className="ui small negative button"
-            onClick={() => deleteRule(rule)}
-          >
+          <button className="ui small negative button" onClick={() => deleteRule(rule)}>
             <i className="trash small icon"></i>Eliminar
           </button>
         </div>
@@ -129,11 +125,22 @@ function AnswersValue({
         <div className="ui segment">
           {!questionnaire && <div>El formulario está cargando.......</div>}
           <h4 className="header">{questionnaire?.formName}</h4>
+          <table class="ui celled table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Valor</th>
+                <th>Cantidad de </th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr></tr>
+            </tbody>
+          </table>
           {renderRules()}
-          <button
-            className="ui primary button"
-            onClick={() => setShowModal(true)}
-          >
+          <button className="ui primary button" onClick={() => setShowModal(true)}>
             Agregar Regla
           </button>
           <button
@@ -145,12 +152,15 @@ function AnswersValue({
         </div>
       </div>
 
-      <AddRuleModal
-        show={showModal}
-        questionnaire={questionnaire}
-        onDismiss={onDismiss}
-        selectedRule={selectedRule}
-      />
+      {showModal && (
+        <AddRuleModal
+          show={showModal}
+          questionnaire={questionnaire}
+          onDismiss={onDismiss}
+          selectedRule={selectedRule}
+          recomendations={recomendations}
+        />
+      )}
 
       <DeleteRuleModal
         show={showDeleteModal}

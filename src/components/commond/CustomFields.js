@@ -47,3 +47,19 @@ export const FieldSelectInput = ({ name, label, options }) => {
     </Field>
   );
 };
+
+export const FieldCheckboxtInput = ({ name, label }) => {
+  return (
+    <Field name={name}>
+      {({ input, meta }) => (
+        <div className="field">
+          <label>{label}</label>
+          <input {...input} />
+          {meta.error && meta.touched && (
+            <div className="ui pointing red basic label">{meta.error}</div>
+          )}
+        </div>
+      )}
+    </Field>
+  );
+};
