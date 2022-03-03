@@ -3,12 +3,14 @@ body {
   margin: 0;
 }
 
-.answer-selected {
-  background-color: green;
-}
-
 .answer-segment:hover {
   cursor: pointer;
+}
+
+.answer-segment-selected {
+  border-color: green;
+  border-style: solid;
+  border-width: 10px;
 }
 
 .question-container {
@@ -54,8 +56,9 @@ body {
 }
 
 .landing-img {
-  max-width: 500px;
+  max-width: 700px;
   margin: auto;
+  margin-bottom: 120px;
 }
 
 .landing-content {
@@ -80,7 +83,22 @@ body {
   color: white;
 }
 
-@media only screen and (max-width: 600px) {
+.landing-content-button:disabled {
+  display: none;
+}
+
+.continue-footer-bar {
+  border-top: 1px solid lightgray;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  padding: 5px 0;
+  background-color: #eef6f6;
+  width: 100%;
+  text-align: center;
+}
+
+@media only screen and (max-width: 800px) {
   .question-container {
     width: 95%;
   }
