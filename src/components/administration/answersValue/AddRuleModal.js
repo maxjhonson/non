@@ -43,7 +43,6 @@ const AddRuleModal = ({
     return (
       <div className="inline field">
         <Loader active={false} />
-
         <label>Valor de la combinación Seleccionada</label>
         <div className="ui buttons">
           <button className="ui button" type="button" onClick={() => onchange(-1)}>

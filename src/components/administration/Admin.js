@@ -1,6 +1,7 @@
 import React from "react";
 import { Route } from "react-router";
 import { Link } from "react-router-dom";
+import TermsAndConditions from "../custumer/TermsAndConditions";
 import AnswersValue from "./answersValue/AnswersValue";
 import NewQuestionnaire from "./questionnaire/NewQuestionnaire";
 import QuestionnaireList from "./questionnaire/QuestionnaireList";
@@ -41,6 +42,9 @@ function Admin() {
       </Route>
       <Route path="/admin/recommendation" exact>
         <Recomendation />
+      </Route>
+      <Route path="c/terms" exact>
+        <TermsAndConditions />
       </Route>
     </div>
   );

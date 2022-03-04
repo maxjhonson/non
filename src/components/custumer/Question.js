@@ -1,19 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import "./custumer.css";
 
-const Question = ({
-  index,
-  question,
-  nextQuestion,
-  selectAnswer,
-  previousQuestion,
-}) => {
+const Question = ({ index, question, nextQuestion, selectAnswer, previousQuestion }) => {
+  const [dependant, setDependant] = useState(null);
+
+  const onSelectAnswer = (i, dependantForm) => {
+    setDependant(dependantForm);
+    selectAnswer(index, i);
+  };
+
   const renderAnswer = (answers) => {
-    return answers.map(({ _id, text }, i) => {
+    return answers.map(({ _id, text, dependantForm }, i) => {
       return (
         <React.Fragment>
           <div
-            onClick={() => selectAnswer(index, i)}
+            onClick={() => onSelectAnswer(i, dependantForm)}
             class="ui grid  ui segment  answer-segment "
           >
             <div className="fourteen wide column ">
@@ -51,10 +52,11 @@ const Question = ({
         </div>
       </div>
       {renderAnswer(question.answers)}
+      <div style={{ marginBottom: "120px" }}></div>
       <div className="continue-footer-bar">
         <button
           disabled={!question.selectedAnswerId}
-          onClick={() => nextQuestion(index)}
+          onClick={() => nextQuestion(dependant)}
           className="landing-content-button"
         >
           Continuar

@@ -1,18 +1,14 @@
 import "bootstrap/dist/css/bootstrap.css";
 import * as $ from "jquery/dist/jquery.js";
 import "bootstrap/dist/js/bootstrap.js";
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom";
 
 //import Admin from "./components/administration/Admin";
 
 import Custumer from "./components/custumer/Custumer";
 import Admin from "./components/administration/Admin";
 import Landing from "./components/custumer/Landing";
+import TermsAndConditions from "./components/custumer/TermsAndConditions";
 
 window.jQuery = $;
 window.$ = $;
@@ -31,6 +27,7 @@ function App() {
         ></Route>
         <Route path="/c" component={Custumer}></Route>
         <Route path="/admin" component={Admin}></Route>
+        <Route path="/terms" component={TermsAndConditions}></Route>
       </Switch>
     </Router>
   );

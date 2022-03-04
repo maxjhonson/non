@@ -58,22 +58,23 @@ function AnswersValue({
   const renderRules = () => {
     return rules.map((rule) => {
       return (
-        <div className="ui segment">
-          <div className="ui large label">
-            {rule.ruleName}
-            <div className="detail">Valor: {rule.ruleValue}</div>
-          </div>
-          {renderQuestionsRule(rule.questionsRule)}
-          <button
-            className="ui small primary button"
-            onClick={() => addRuleRecomendation(rule)}
-          >
-            Recomendación
-          </button>
-          <button className="ui small negative button" onClick={() => deleteRule(rule)}>
-            <i className="trash small icon"></i>Eliminar
-          </button>
-        </div>
+        <div></div>
+        // <div className="ui segment">
+        //   <div className="ui large label">
+        //     {rule.ruleName}
+        //     <div className="detail">Valor: {rule.ruleValue}</div>
+        //   </div>
+        //   {renderQuestionsRule(rule.questionsRule)}
+        //   <button
+        //     className="ui small primary button"
+        //     onClick={() => addRuleRecomendation(rule)}
+        //   >
+        //     Recomendación
+        //   </button>
+        //   <button className="ui small negative button" onClick={() => deleteRule(rule)}>
+        //     <i className="trash small icon"></i>Eliminar
+        //   </button>
+        // </div>
       );
     });
   };

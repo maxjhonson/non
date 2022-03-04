@@ -53,7 +53,6 @@ function AddDependentModal({ onDismiss, data, update }) {
           </td>
           <td>
             <Field name={`answers[${i}][dependantForm]quantity`} component="select">
-              <option value="">0</option>
               <option>1</option>
               <option>2</option>
               <option>3</option>

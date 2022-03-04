@@ -4,6 +4,7 @@ import "./custumer.css";
 import { MemoryRouter, Route } from "react-router";
 import QuestionList from "./QuestionList";
 import { Link } from "react-router-dom";
+import MailForm from "./MailForm";
 
 function Custumer() {
   return (
@@ -21,6 +22,9 @@ function Custumer() {
             </Route>
             <Route path="/questionnaire">
               <QuestionList />
+            </Route>
+            <Route path="/mailForm">
+              <MailForm />
             </Route>
           </switch>
         </div>

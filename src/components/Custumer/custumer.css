@@ -98,8 +98,32 @@ body {
   text-align: center;
 }
 
+.half-container {
+  width: 50%;
+  padding: 0px 100px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  margin: 0 auto;
+  padding: 50px;
+}
+
+.half-container-parent {
+  text-align: center;
+  padding: auto;
+}
+
+.half-container-parent h1 {
+  text-align: left;
+}
+
 @media only screen and (max-width: 800px) {
   .question-container {
+    width: 95%;
+  }
+}
+
+@media only screen and (max-width: 800px) {
+  .half-container {
     width: 95%;
   }
 }

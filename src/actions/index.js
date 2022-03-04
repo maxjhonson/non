@@ -36,6 +36,12 @@ import {
   DELETE_GRADE_RECOMENDATION,
   DELETE_GRADE_RECOMENDATION_SUCCESS,
   DELETE_GRADE_RECOMENDATION_ERROR,
+  FETCH_ROOT_FORM,
+  FETCH_ROOT_FORM_SUCCESS,
+  FETCH_ROOT_FORM_ERROR,
+  FETCH_DEPENDENT_FORM,
+  FETCH_DEPENDENT_FORM_SUCCESS,
+  FETCH_DEPENDENT_FORM_ERROR,
 } from "./types";
 import { ObjectId } from "bson";
 
@@ -250,6 +256,32 @@ export const deleteGradeRecomendation = (id) => {
       dispatch({ type: DELETE_GRADE_RECOMENDATION_SUCCESS, payload: id });
     } catch {
       dispatch({ type: DELETE_GRADE_RECOMENDATION_ERROR });
+    }
+  };
+};
+
+//ROOT FORM
+export const fetchRootForm = () => {
+  return async (dispatch) => {
+    dispatch({ type: FETCH_ROOT_FORM });
+    try {
+      const result = await coreApi.get(`/questionnaireRoot`);
+      console.log("hola", result);
+      dispatch({ type: FETCH_ROOT_FORM_SUCCESS, payload: result.data });
+    } catch {
+      dispatch({ type: FETCH_ROOT_FORM_ERROR });
+    }
+  };
+};
+
+export const fetchDependentForm = (id) => {
+  return async (dispatch) => {
+    dispatch({ type: FETCH_DEPENDENT_FORM });
+    try {
+      const result = await coreApi.get(`/questionnaireDependent/${id}`);
+      dispatch({ type: FETCH_DEPENDENT_FORM_SUCCESS, payload: result.data });
+    } catch {
+      dispatch({ type: FETCH_DEPENDENT_FORM_ERROR });
     }
   };
 };
