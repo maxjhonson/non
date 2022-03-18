@@ -6,6 +6,8 @@ import Question from "./Question";
 
 const QuestionList = ({ rootForm, dependent, fetchDependentForm, fetchRootForm }) => {
   const [questionnaire, setQuestionnaire] = useState();
+  const [questionnaireTree, setQuestionnaireTree] = useState({});
+  const [currentQuestionnaire, setCurrentQuestionnaire] = useState();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [root, setRoot] = useState({});
   const history = useHistory();
@@ -16,28 +18,27 @@ const QuestionList = ({ rootForm, dependent, fetchDependentForm, fetchRootForm }
 
   useEffect(() => {
     setQuestionnaire(rootForm);
+
+    questionnaireTree[rootForm?._id] = {
+      active: true,
+      next: null,
+      previous: null,
+      listOfQuestions: rootForm?.questions,
+    };
+    setQuestionnaireTree({ ...questionnaireTree });
+    setCurrentQuestionnaire(rootForm?._id);
+    console.log(questionnaireTree);
   }, [rootForm]);
 
   const selectAnswer = (questionIndex, answerIndex) => {
-    console.log(answerIndex);
     const newQuestionaire = { ...questionnaire };
-
     const selectedAnswerId =
       newQuestionaire.questions[questionIndex].answers[answerIndex]._id;
-
     newQuestionaire.questions[questionIndex].selectedAnswerId = selectedAnswerId;
-
     setQuestionnaire({ ...newQuestionaire });
   };
 
-  const nextQuestion = async (currentDependent) => {
-    if (currentDependent && questionnaire.formType === "root")
-      return await fetchDependentForm(currentDependent.formId);
-    console.log(currentIndex, questionnaire.questions.length);
-    if (currentIndex < questionnaire.questions.length - 1)
-      setCurrentIndex(currentIndex + 1);
-    else history.push("/mailForm");
-  };
+  const nextQuestion = async (currentDependent) => {};
 
   useEffect(() => {
     setQuestionnaire(dependent);
@@ -51,7 +52,7 @@ const QuestionList = ({ rootForm, dependent, fetchDependentForm, fetchRootForm }
 
   return (
     <Question
-      question={questionnaire.questions[currentIndex]}
+      question={questionnaireTree[currentQuestionnaire]}
       selectAnswer={selectAnswer}
       index={currentIndex}
       nextQuestion={nextQuestion}

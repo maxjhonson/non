@@ -11,6 +11,7 @@ import {
   FETCH_ROOT_FORM_SUCCESS,
   RESET_QUESTIONNAIRE,
   UPDATE_QUESTIONNAIRE,
+  UPDATE_QUESTIONNAIRE_ERROR,
   UPDATE_QUESTIONNAIRE_SUCCESS,
 } from "../actions/types";
 
@@ -29,20 +30,22 @@ const questionnaireReducer = (state = initialState, action) => {
       return { ...state, loading: true, error: null };
     case UPDATE_QUESTIONNAIRE_SUCCESS:
       return { ...state, loading: false, current: action.payload, error: null };
+    case UPDATE_QUESTIONNAIRE_ERROR:
+      return { ...state, loading: false, error: action.payload };
     case ADD_QUESTIONNAIRE:
       return { ...state, loading: true, error: null };
     case ADD_QUESTIONNAIRE_SUCCESS:
       return { ...state, loading: false, current: action.payload, error: null };
     case ADD_QUESTIONNAIRE_ERROR:
-      return { ...state, loading: false, error: "Error" };
+      return { ...state, loading: false, error: action.payload };
     case FETCH_QUESTIONNAIRE:
-      return { ...state, current: action.payload };
+      return { ...state, current: action.payload, error: null };
     case FETCH_ALL_QUESTIONNAIRE:
       return { ...state, loading: true };
     case FETCH_ALL_QUESTIONNAIRE_SUCCESS:
-      return { ...state, all: action.payload, loading: false };
+      return { ...state, all: action.payload, loading: false, error: null };
     case RESET_QUESTIONNAIRE:
-      return { ...state, current: undefined };
+      return { ...state, current: undefined, error: null };
     case FETCH_ROOT_FORM:
       return { ...state, loading: true, error: null };
     case FETCH_ROOT_FORM_SUCCESS:
@@ -52,7 +55,7 @@ const questionnaireReducer = (state = initialState, action) => {
     case FETCH_DEPENDENT_FORM_SUCCESS:
       return { ...state, loading: false, error: null, dependent: action.payload };
     default:
-      return state;
+      return { ...state, error: null };
   }
 };
 

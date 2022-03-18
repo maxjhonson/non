@@ -67,7 +67,7 @@ function AnswersValue({
         //   {renderQuestionsRule(rule.questionsRule)}
         //   <button
         //     className="ui small primary button"
-        //     onClick={() => addRuleRecomendation(rule)}
+        //     onClick={() => addRuleRecomendation(rule)}c
         //   >
         //     Recomendación
         //   </button>

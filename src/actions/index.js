@@ -120,8 +120,15 @@ export const deleteRule = (id, formId) => {
 export const updateQuestionnaire = (formValues) => {
   return async (dispatch) => {
     dispatch({ type: UPDATE_QUESTIONNAIRE });
-    const response = await coreApi.put(`/questionnaire/`, formValues);
-    dispatch({ type: UPDATE_QUESTIONNAIRE_SUCCESS, payload: response.data });
+    try {
+      const response = await coreApi.put(`/questionnaire/`, formValues);
+      dispatch({ type: UPDATE_QUESTIONNAIRE_SUCCESS, payload: response.data });
+    } catch (err) {
+      dispatch({
+        type: UPDATE_QUESTIONNAIRE_ERROR,
+        payload: err.response.data.infoMessage,
+      });
+    }
   };
 };
 
@@ -132,7 +139,7 @@ export const addQuestionnaire = (formValues) => {
       const response = await coreApi.post(`/questionnaire/`, formValues);
       dispatch({ type: ADD_QUESTIONNAIRE_SUCCESS, payload: response.data });
     } catch (err) {
-      dispatch({ type: ADD_QUESTIONNAIRE_ERROR });
+      dispatch({ type: ADD_QUESTIONNAIRE_ERROR, payload: err.response.data.infoMessage });
     }
   };
 };
