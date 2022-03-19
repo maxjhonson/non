@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 import "./custumer.css";
 
-const Question = ({ index, question, nextQuestion, selectAnswer, previousQuestion }) => {
+const Question = ({
+  question,
+  nextQuestion,
+  selectAnswer,
+  previousQuestion,
+}) => {
   const [dependant, setDependant] = useState(null);
 
-  const onSelectAnswer = (i, dependantForm) => {
-    setDependant(dependantForm);
-    selectAnswer(index, i);
-  };
-
   const renderAnswer = (answers) => {
-    return answers.map(({ _id, text, dependantForm }, i) => {
+    return answers?.map(({ _id, text, dependantForm }, i) => {
       return (
         <React.Fragment>
           <div
-            onClick={() => onSelectAnswer(i, dependantForm)}
+            onClick={() => selectAnswer(_id)}
             class="ui grid  ui segment  answer-segment "
           >
             <div className="fourteen wide column ">

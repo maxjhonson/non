@@ -4,55 +4,53 @@ import { useHistory } from "react-router-dom";
 import { fetchDependentForm, fetchRootForm } from "../../actions";
 import Question from "./Question";
 
-const QuestionList = ({ rootForm, dependent, fetchDependentForm, fetchRootForm }) => {
-  const [questionnaire, setQuestionnaire] = useState();
+const QuestionList = ({
+  rootForm,
+  dependent,
+  fetchDependentForm,
+  fetchRootForm,
+}) => {
   const [questionnaireTree, setQuestionnaireTree] = useState({});
-  const [currentQuestionnaire, setCurrentQuestionnaire] = useState();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [root, setRoot] = useState({});
-  const history = useHistory();
+  const [currentIndex, setCurrentIndex] = useState({
+    form: 0,
+    questionnaire: 0,
+  });
 
   useEffect(() => {
     fetchRootForm();
   }, []);
 
   useEffect(() => {
-    setQuestionnaire(rootForm);
-
-    questionnaireTree[rootForm?._id] = {
-      active: true,
-      next: null,
-      previous: null,
-      listOfQuestions: rootForm?.questions,
-    };
-    setQuestionnaireTree({ ...questionnaireTree });
-    setCurrentQuestionnaire(rootForm?._id);
-    console.log(questionnaireTree);
+    let newQuestionnaire = null;
+    if (rootForm) newQuestionnaire = [[...rootForm?.questions]];
+    setQuestionnaireTree(newQuestionnaire);
   }, [rootForm]);
 
-  const selectAnswer = (questionIndex, answerIndex) => {
-    const newQuestionaire = { ...questionnaire };
-    const selectedAnswerId =
-      newQuestionaire.questions[questionIndex].answers[answerIndex]._id;
-    newQuestionaire.questions[questionIndex].selectedAnswerId = selectedAnswerId;
-    setQuestionnaire({ ...newQuestionaire });
+  const selectAnswer = (answerId) => {
+    const { form, questionnaire } = currentIndex;
+    let newQuestionaireTre = [...questionnaireTree];
+    newQuestionaireTre[form][questionnaire].selectedAnswerId = answerId;
+    setQuestionnaireTree(newQuestionaireTre);
   };
 
   const nextQuestion = async (currentDependent) => {};
 
   useEffect(() => {
-    setQuestionnaire(dependent);
-    setCurrentIndex(0);
+    /*  setQuestionnaire(dependent);
+    setCurrentIndex(0);*/
   }, [dependent]);
 
   const previousQuestion = () => {
     if (currentIndex !== 0) setCurrentIndex(currentIndex - 1);
   };
-  if (!questionnaire) return <div></div>;
+  if (!questionnaireTree || !questionnaireTree[currentIndex.form])
+    return <div></div>;
 
   return (
     <Question
-      question={questionnaireTree[currentQuestionnaire]}
+      question={
+        questionnaireTree[currentIndex.form][currentIndex.questionnaire]
+      }
       selectAnswer={selectAnswer}
       index={currentIndex}
       nextQuestion={nextQuestion}
@@ -62,7 +60,6 @@ const QuestionList = ({ rootForm, dependent, fetchDependentForm, fetchRootForm }
 };
 
 const mapStateToProp = (state) => {
-  console.log("state", state.questionnaires);
   return {
     rootForm: state.questionnaires.rootForm,
     dependent: state.questionnaires.dependent,
